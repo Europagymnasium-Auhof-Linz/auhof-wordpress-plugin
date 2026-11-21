@@ -16,3 +16,14 @@
 .auhof-rp-felder { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; }
 .auhof-rp-felder input { width: 100%; }
 .auhof-rp-felder input.ist-aktiv { border-color: #1a5fb4; box-shadow: 0 0 0 1px #1a5fb4; background: #fffbd6; }
+
+/* Diashow-Seite */
+.auhof-dia-bilder { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 0 0 1em; padding: 0; list-style: none; }
+.auhof-dia-bild { margin: 0; padding: 8px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; cursor: move; display: flex; flex-direction: column; gap: 6px; }
+.auhof-dia-bild[hidden] { display: none; }
+.auhof-dia-bild__vorschau img { display: block; width: 100%; height: 120px; object-fit: cover; border-radius: 2px; }
+.auhof-dia-bild__lage select { margin-left: 4px; }
+.auhof-dia-bild__knoepfe { display: flex; gap: 6px; align-items: center; }
+.auhof-dia-bild__knoepfe .auhof-dia-weg { margin-left: auto; }
+.auhof-dia-bild__hinweis { color: #b32d2e; font-weight: 600; }
+.auhof-dia-platz { border: 2px dashed #2271b1; border-radius: 4px; min-height: 200px; }
