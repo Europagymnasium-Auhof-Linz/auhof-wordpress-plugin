@@ -117,16 +117,30 @@
 	druck.className = 'rp-druck';
 	druck.setAttribute('aria-hidden', 'true');
 	root.appendChild(druck);
+	// Handy-Browser (Android, iOS – auch Brave, Chrome, Firefox dort) und Safari übernehmen das Seitenformat aus
+	// @page nicht und drucken hochkant. Dort wird die Druckseite bei Hochformat um 90° gedreht (raumplan.css,
+	// .rp-druck--drehbar): Der Plan liegt quer auf dem Blatt. Wählt man selbst Querformat, bleibt er ungedreht.
+	function ohneSeitenformat() {
+		var ua = navigator.userAgent || '';
+		if (navigator.userAgentData && navigator.userAgentData.mobile) return true;
+		if (/Android|iPhone|iPad|iPod/i.test(ua)) return true;
+		if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return true; // iPad mit Desktop-Kennung
+		return /Safari/.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua); // Safari am Mac
+	}
 	function druckBauen() {
 		var a = druckAnordnung();
 		while (druck.firstChild) druck.removeChild(druck.firstChild);
+		druck.className = 'rp-druck' + (ohneSeitenformat() ? ' rp-druck--drehbar' : '');
+		var inhalt = document.createElement('div');
+		inhalt.className = 'rp-druck-inhalt';
+		druck.appendChild(inhalt);
 		var titel = document.createElement('p');
 		titel.className = 'rp-druck-titel';
 		titel.textContent = 'Raumplan · ' + P.year;
-		druck.appendChild(titel);
+		inhalt.appendChild(titel);
 		var flaeche = document.createElement('div');
 		flaeche.className = 'rp-druck-flaeche rp-druck-' + a.art;
-		druck.appendChild(flaeche);
+		inhalt.appendChild(flaeche);
 		// Maße in mm für A4 quer mit 8 mm Rand; bei weniger Platz (größerer Rand im Druckdialog) schrumpft alles
 		// gemeinsam (flex-shrink im Verhältnis der Breiten, Höhe folgt der viewBox).
 		a.gruppen.forEach(function (gruppe) {

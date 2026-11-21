@@ -1,5 +1,16 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.7 – 21.11.2026
+- **Raumplan drucken am Handy und in Safari** (`assets/raumplan.js`, `assets/raumplan.css`):
+  - Diese Browser übernehmen die Vorgabe „A4 quer“ (`@page`) nicht und drucken hochkant. Eine Webseite kann das Querformat dort nicht erzwingen.
+  - Neu: Auf Android und iOS (alle Browser, auch Brave) sowie in Safari am Mac wird die Druckseite bei Hochformat um 90° gedreht; der Plan liegt quer auf dem Blatt und nutzt es ganz aus.
+  - Wählt man im Druckdialog selbst Querformat, bleibt der Plan ungedreht. Am Computer mit Chrome, Edge oder Firefox ändert sich nichts.
+  - Erkennung: `navigator.userAgentData.mobile`, Kennung Android/iPhone/iPad (auch iPad mit Desktop-Kennung) oder Safari ohne Chrome/Firefox/Edge.
+- Geprüft (simuliert in Chromium mit den Kennungen der Browser, `@page` für Handy/Safari entfernt):
+  - Brave Android hoch mit 8 und 15 mm Rand sowie selbst quer, iPhone Safari hoch, Mac Safari hoch und quer, Windows Chrome und Firefox.
+  - Alle ergeben genau 1 Seite; gedreht nur bei Hochformat, nichts abgeschnitten.
+  - Nicht getestet: echte Geräte bzw. echtes Safari (WebKit stand nicht zur Verfügung).
+
 ## 1.4.6 – 21.11.2026
 - **Raumplan, Stockwerksnamen einheitlich** (`data/raumplan.json`, Eintrag in `static`):
   - „3. Stock“ war aus der Vorlage fett und in normaler Schreibweise übernommen, die übrigen nicht fett in Großbuchstaben. Jetzt heißt er „3. STOCK“, nicht fett, gleiche Größe 13,45.
