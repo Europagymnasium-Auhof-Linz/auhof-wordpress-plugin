@@ -1,5 +1,17 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.7.0 – 21.11.2026
+- **Pinnwand: Bild je Info** (`includes/infos.php`, `includes/infos-admin.php`, `assets/infos.css`, `assets/infos-admin.js`, `assets/admin.css`):
+  - Im Backend „Bild wählen (optional)“ aus der Mediathek, „Bild ändern“, „Bild entfernen“ und die Darstellung „Klein, links neben dem Text“ oder „Groß, über der Überschrift“. Fehlt in der Mediathek der Alternativtext, erscheint ein roter Hinweis mit Link zum Bild.
+  - Feste Darstellungen statt Prozent: Prozentwerte hängen von der Kästchenbreite ab, die am Handy und am Computer stark schwankt.
+  - Startseite: passende Bildgröße per srcset, erst bei Bedarf geladen, Alternativtext aus der Mediathek.
+  - Nur Bilder aus der Mediathek werden angenommen (andere IDs, Seiten, SVG → kein Bild); Darstellung nur aus der festen Liste.
+- Geprüft auf der Testseite:
+  - `tests/infos-test.php` 35/35 (neu: Bild-ID, ungültige ID/Seite, Schadcode, Darstellung, srcset, lazy, Alternativtext).
+  - Backend-Formular im Browser mit nachgebildeter Mediathek: Bild wählen/ändern/entfernen, Hinweis bei fehlendem Alternativtext, neue Zeile mit +; gespeicherte Daten stimmen; axe 0 Befunde.
+  - Startseite bei 1280/820/390 px: groß und klein, kein Überlauf, axe 0 Befunde. Beispieleinträge danach entfernt.
+  - Sicherheitstest 58/58, PHPCS 0 Fehler, PHP 7.4+, Semgrep 0 Befunde, Seitentest 34/34, Tastatur 45/45.
+
 ## 1.6.2 – 21.11.2026
 - **Pinnwand: Links, fett, kursiv im Text** (`includes/infos.php`, `includes/infos-admin.php`): Statt alles HTML zu entfernen, lässt `wp_kses` nur `<a href>` (http, https, mailto, tel), `<strong>`, `<em>`, `<b>`, `<i>` durch – beim Speichern und nochmals bei der Ausgabe. Attribute wie `onclick`, `style`, `target` und alle anderen Tags (Bilder, Skripte, iframes) werden entfernt, offene Tags geschlossen. Textfeld jetzt bis 1000 Zeichen, mit Hinweis, was erlaubt ist.
 - Geprüft auf der Testseite: `tests/infos-test.php` 26/26 (u. a. `javascript:`-Link, `onclick`, `img`/`script`/`iframe`, offenes Tag), Sicherheitstest 58/58, PHPCS ohne Befund in den Pinnwand-Dateien, Semgrep 0 Befunde; Startseite mit Link und Fettschrift, axe 0 Befunde (Beispieleintrag danach entfernt).

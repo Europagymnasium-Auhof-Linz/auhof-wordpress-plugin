@@ -23,3 +23,14 @@ ul.auhof-infos__liste.auhof-infos__liste {
 .auhof-info__titel { margin: 0; font-size: 1.15rem; line-height: 1.3; }
 .auhof-info__titel a { color: var(--auhof-rot-dunkel, #8a0f1b); }
 .auhof-info__text { margin: 0.4rem 0 0; color: var(--auhof-text, #333); }
+
+/* Bilder (1.7.0): feste Darstellungen statt Prozent */
+.auhof-infos__liste > li.auhof-info--klein { display: flex; gap: 1rem; align-items: flex-start; }
+.auhof-info--klein .auhof-info__bild { flex: 0 0 96px; width: 96px; height: auto; max-height: 96px; object-fit: contain; border-radius: 4px; }
+.auhof-info--klein .auhof-info__inhalt { flex: 1; min-width: 0; }
+.auhof-infos__liste > li.auhof-info--gross { padding-top: 0; overflow: hidden; }
+.auhof-info--gross .auhof-info__bild { display: block; width: calc(100% + 2.5rem); max-width: none; height: auto; aspect-ratio: 16 / 9; object-fit: cover; margin: 0 -1.25rem 1rem; }
+@media (max-width: 420px) {
+	.auhof-infos__liste > li.auhof-info--klein { gap: 0.75rem; }
+	.auhof-info--klein .auhof-info__bild { flex-basis: 72px; width: 72px; max-height: 72px; }
+}

@@ -76,7 +76,11 @@ function auhof_infos_admin_eintrag( $nr, $info ) {
 		'titel'    => '',
 		'text'     => '',
 		'link'     => '',
+		'bild'     => 0,
+		'bildart'  => 'klein',
 	) : $info;
+	$bild    = ! empty( $info['bild'] ) && wp_attachment_is_image( (int) $info['bild'] ) ? (int) $info['bild'] : 0;
+	$alt     = $bild ? trim( (string) get_post_meta( $bild, '_wp_attachment_image_alt', true ) ) : '';
 	$name    = 'auhof_infos[eintraege][' . $nr . ']';
 	$id      = 'auhof-info-' . $nr;
 	$aus     = $vorlage ? ' disabled' : '';
@@ -103,6 +107,21 @@ function auhof_infos_admin_eintrag( $nr, $info ) {
 			<label for="<?php echo esc_attr( $id ); ?>-link"><?php esc_html_e( 'Link (optional, z. B. Seite mit Details)', 'auhof-schulseiten' ); ?></label>
 			<input type="url" id="<?php echo esc_attr( $id ); ?>-link" name="<?php echo esc_attr( $name ); ?>[link]" value="<?php echo esc_attr( $info['link'] ); ?>" placeholder="https://" class="widefat"<?php echo esc_attr( $aus ); ?>>
 		</p>
+		<div class="auhof-info-bild">
+			<span class="auhof-info-bild__vorschau"><?php echo $bild ? wp_get_attachment_image( $bild, 'thumbnail', false, array( 'alt' => '' ) ) : ''; ?></span>
+			<input type="hidden" class="auhof-info-bild__id" name="<?php echo esc_attr( $name ); ?>[bild]" value="<?php echo esc_attr( (string) $bild ); ?>"<?php echo esc_attr( $aus ); ?>>
+			<span class="auhof-info-bild__steuerung">
+				<button type="button" class="button auhof-info-bild-waehlen"><?php echo $bild ? esc_html__( 'Bild ändern', 'auhof-schulseiten' ) : esc_html__( 'Bild wählen (optional)', 'auhof-schulseiten' ); ?></button>
+				<button type="button" class="button-link button-link-delete auhof-info-bild-weg"<?php echo $bild ? '' : ' hidden'; ?>><?php esc_html_e( 'Bild entfernen', 'auhof-schulseiten' ); ?></button>
+				<label for="<?php echo esc_attr( $id ); ?>-bildart"><?php esc_html_e( 'Darstellung', 'auhof-schulseiten' ); ?></label>
+				<select id="<?php echo esc_attr( $id ); ?>-bildart" name="<?php echo esc_attr( $name ); ?>[bildart]"<?php echo esc_attr( $aus ); ?>>
+					<?php foreach ( auhof_infos_bildarten() as $schluessel => $text ) : ?>
+						<option value="<?php echo esc_attr( $schluessel ); ?>" <?php selected( $info['bildart'], $schluessel ); ?>><?php echo esc_html( $text ); ?></option>
+					<?php endforeach; ?>
+				</select>
+				<a class="auhof-info-bild__hinweis" href="<?php echo esc_url( $bild ? (string) get_edit_post_link( $bild ) : '#' ); ?>"<?php echo ( $bild && '' === $alt ) ? '' : ' hidden'; ?>><?php esc_html_e( 'Alternativtext fehlt – bitte in der Mediathek ergänzen', 'auhof-schulseiten' ); ?></a>
+			</span>
+		</div>
 	</li>
 	<?php
 }
@@ -152,6 +171,17 @@ function auhof_infos_admin_assets( $hook ) {
 	if ( 'toplevel_page_auhof-infos' !== $hook ) {
 		return;
 	}
+	wp_enqueue_media();
 	wp_enqueue_style( 'auhof-admin', AUHOF_SCHULSEITEN_URL . 'assets/admin.css', array(), AUHOF_SCHULSEITEN_VERSION );
 	wp_enqueue_script( 'auhof-infos-admin', AUHOF_SCHULSEITEN_URL . 'assets/infos-admin.js', array(), AUHOF_SCHULSEITEN_VERSION, true );
+	wp_localize_script(
+		'auhof-infos-admin',
+		'auhofInfos',
+		array(
+			'titel'   => __( 'Bild für die Pinnwand wählen', 'auhof-schulseiten' ),
+			'knopf'   => __( 'Bild verwenden', 'auhof-schulseiten' ),
+			'waehlen' => __( 'Bild wählen (optional)', 'auhof-schulseiten' ),
+			'aendern' => __( 'Bild ändern', 'auhof-schulseiten' ),
+		)
+	);
 }

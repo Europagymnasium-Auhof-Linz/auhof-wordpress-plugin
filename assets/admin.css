@@ -48,3 +48,9 @@
 .auhof-info-zeile__knoepfe { margin-left: auto; display: flex; gap: 6px; }
 .auhof-info-zeile__knoepfe .button { min-width: 36px; font-weight: 700; }
 .auhof-info-weg { color: #b32d2e !important; border-color: #b32d2e !important; }
+.auhof-info-bild { display: flex; gap: 12px; align-items: flex-start; margin: 0.5em 0; }
+.auhof-info-bild__vorschau img { display: block; width: 72px; height: 72px; object-fit: cover; border-radius: 3px; border: 1px solid #c3c4c7; }
+.auhof-info-bild__vorschau:empty { display: none; }
+.auhof-info-bild__steuerung { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.auhof-info-bild__hinweis { flex-basis: 100%; color: #b32d2e; font-weight: 600; }
+.auhof-info-bild__hinweis[hidden], .auhof-info-bild-weg[hidden] { display: none; }
