@@ -117,35 +117,63 @@
 		b.addEventListener('click', function () { setView(v[0]); updateHash(); });
 		nav.appendChild(b);
 	});
-	/* Vergrößerung (Knöpfe − / +): der Plan wird breiter und lässt sich wischen; Stufe 1 = Normalgröße. */
-	var STUFEN = [1, 1.5, 2, 3], stufe = 0;
+	/* Größe (Knöpfe − / +). Faktor 1 = Ausgangsgröße.
+	   Passt der Plan nicht in die Breite (Handy, Stockwerk mind. 1000 px), gibt es nur Verkleinerungen bis
+	   „ganzer Plan sichtbar“ – größer als die Ausgangsgröße wäre am Handy zu groß.
+	   Passt er (Computer), gibt es nur Vergrößerungen (wischbar). */
+	var faktor = 1, wunsch = 1; // wunsch = gewählte Größe (0 = ganzer Plan), faktor = in dieser Ansicht angewandt
 	var zoomMinus = root.querySelector('.rp-zoom-minus'), zoomPlus = root.querySelector('.rp-zoom-plus');
-	function zoomAnzeigen() {
-		if (zoomMinus) zoomMinus.disabled = stufe === 0;
-		if (zoomPlus) zoomPlus.disabled = stufe === STUFEN.length - 1;
+	function platz() {
+		var s = getComputedStyle(sheet);
+		return sheet.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight);
 	}
-	// Ausgangsbreite messen (inkl. Mindestbreite am Handy) und vervielfachen.
+	// Ausgangsbreite des Plans (mit Mindestbreite am Handy), ohne eigene Größenangaben gemessen.
+	function basisBreite() {
+		svg.style.width = ''; svg.style.maxWidth = ''; svg.style.minWidth = '';
+		return svg.getBoundingClientRect().width;
+	}
+	function stufen(basis) {
+		var ganz = basis > 0 ? platz() / basis : 1;
+		if (ganz >= 0.95) return [1, 1.5, 2, 3];
+		var liste = [ganz];
+		[0.5, 0.75].forEach(function (f) { if (f > ganz * 1.15) liste.push(f); });
+		liste.push(1);
+		return liste;
+	}
+	function naechste(liste, f) {
+		var beste = 0;
+		liste.forEach(function (x, i) { if (Math.abs(x - f) < Math.abs(liste[beste] - f)) beste = i; });
+		return beste;
+	}
+	function zoomAnzeigen(liste) {
+		var i = naechste(liste, faktor);
+		if (zoomMinus) zoomMinus.disabled = i === 0;
+		if (zoomPlus) zoomPlus.disabled = i === liste.length - 1;
+	}
 	function zoomAnwenden() {
-		svg.style.width = ''; svg.style.maxWidth = '';
-		if (!stufe || svg.style.display === 'none') return;
-		var basis = svg.getBoundingClientRect().width;
-		svg.style.maxWidth = 'none';
-		svg.style.width = Math.round(basis * STUFEN[stufe]) + 'px';
+		if (svg.style.display === 'none') { svg.style.width = ''; zoomAnzeigen([1, 1.5, 2, 3]); return; }
+		var basis = basisBreite(), liste = stufen(basis);
+		faktor = liste[naechste(liste, wunsch)]; // je Ansicht und Bildschirmbreite die passende Stufe
+		zoomAnzeigen(liste);
+		if (faktor === 1) return;
+		svg.style.maxWidth = 'none'; svg.style.minWidth = '0';
+		svg.style.width = Math.round(basis * faktor) + 'px';
 	}
 	function zoom(richtung) {
-		stufe = Math.max(0, Math.min(STUFEN.length - 1, stufe + richtung));
-		zoomAnzeigen();
+		var liste = stufen(svg.style.display === 'none' ? 0 : basisBreite());
+		var i = Math.max(0, Math.min(liste.length - 1, naechste(liste, faktor) + richtung));
+		faktor = liste[i];
+		wunsch = i === 0 && faktor < 1 ? 0 : faktor;
 		setView(view);
 		if (selected >= 0) reveal(selected, false);
-		statusEl.textContent = 'Vergrößerung ' + Math.round(STUFEN[stufe] * 100) + ' %';
+		statusEl.textContent = faktor === liste[0] && faktor < 1 ? 'Ganzer Plan sichtbar' : 'Plangröße ' + Math.round(faktor * 100) + ' %';
 	}
 	if (zoomMinus) zoomMinus.addEventListener('click', function () { zoom(-1); });
 	if (zoomPlus) zoomPlus.addEventListener('click', function () { zoom(1); });
-	zoomAnzeigen();
 
 	function setView(id) {
 		view = id;
-		var useGrid = id === 'alle' && stufe === 0 ? gridOK() : false;
+		var useGrid = id === 'alle' && faktor === 1 ? gridOK() : false;
 		if (useGrid) {
 			buildGrid();
 			grid.style.display = ''; svg.style.display = 'none';

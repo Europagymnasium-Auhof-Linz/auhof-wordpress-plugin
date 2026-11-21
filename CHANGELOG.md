@@ -1,5 +1,13 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.1 – 21.11.2026
+- **Raumplan am Handy:**
+  - „−“ verkleinert die Stockwerksansicht in Stufen (75 %, 50 %) bis „ganzer Plan sichtbar“.
+  - „+“ geht nur bis zur Ausgangsgröße zurück; am Handy wäre größer zu groß.
+  - Am Computer und Tablet ist alles unverändert (Vergrößern bis 300 %).
+  - Die gewählte Größe bleibt beim Wechsel der Ansicht erhalten.
+  - Datei `assets/raumplan.js`.
+
 ## 1.4.0 – 21.11.2026
 - **Reihenfolge je Funktion im Organigramm:**
   - Personen → Funktionen → Funktion bearbeiten zeigt alle Personen dieser Funktion mit einem Zahlenfeld. Eine kleinere Zahl steht weiter vorn; Personen ohne Zahl folgen alphabetisch.

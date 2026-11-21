@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.4.1 =
+* Raumplan am Handy: mit „−“ bis zur ganzen Planbreite verkleinern; „+“ nur bis zur Ausgangsgröße. Am Computer unverändert.
+
 = 1.4.0 =
 * Organigramm: eigene Reihenfolge der Personen je Funktion (Personen → Funktionen → Funktion bearbeiten, oder CSV „Deutsch (1)“). Bisherige Reihenfolge wird beim Update übernommen.
 
