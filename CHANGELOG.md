@@ -1,5 +1,19 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.10 – 21.11.2026
+- **Raumplan drucken in Safari** (Mac-Screenshot: ungedreht, verkleinert):
+  - Safari baut die Druckseite nach der Fensterbreite auf, skaliert auf die Papierbreite und wertet `(orientation)` nach dem Fenster aus. CSS-Drehung und Formatvorgaben greifen deshalb nicht.
+  - Lösung (`assets/raumplan.js` `druckBild()`, `assets/raumplan.css`): Auf Handys und in Safari wird eine bereits gedrehte Vektorgrafik gedruckt (hochkant, Plan quer darauf, alle Stockwerke im selben Maßstab). Der Browser muss sie nur auf Seitenbreite skalieren.
+  - Seitenverhältnis 1,24: passt auf A4 und Letter samt Rand und Kopf-/Fußzeile.
+  - Entsteht beim Drucken, also auch über Browsermenü oder Strg+P; markierter Raum und aktuelle Namen sind enthalten.
+  - Die CSS-Drehung aus 1.4.7–1.4.9 ist entfernt.
+  - Wählt man auf diesen Geräten selbst Querformat, wird die hochkante Grafik kleiner gedruckt. Standard ist hochkant.
+- Geprüft (simuliert, Chromium mit den Kennungen von Android, iPhone, Mac Safari und Windows; für iPhone/Safari ohne `@page`):
+  - 26 PDFs mit Kopf-/Fußzeile, A4 und Letter, Rand 6–15 mm: je 1 Seite, hoch auf Handy/Safari, quer am Computer.
+  - Rechnerische Prüfung der Safari-Skalierung: passt.
+  - Bildschirm pixelgleich zu 1.4.9.
+  - Nicht getestet: echtes Safari und echte Geräte.
+
 ## 1.4.9 – 21.11.2026
 - **Raumplan drucken am Handy, weiterhin 2 Seiten** (`assets/raumplan.js`, `assets/raumplan.css`):
   - Ursache (aus dem Screenshot von Brave/Android): Android übernimmt die Vorgabe „A4 quer“ für den Seitenaufbau, druckt aber auf hochkant liegendes Papier und verkleinert die Querseite darauf; deshalb füllte sie nur die obere Hälfte. Die Abfrage „Hochformat“ richtet sich nach dem Papier, also wurde gedreht, und der hohe gedrehte Plan passte nicht in die niedrige Querseite.
