@@ -1,5 +1,10 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.7.1 – 21.11.2026
+- **Pinnwand, großes Bild bei nur einer Info** (`includes/infos.php`, `assets/infos.css`): Eine einzelne Info bekam die ganze Breite (1200 px), das Foto wurde 16:9 und damit 674 px hoch. Jetzt steht ein großes Bild in breiten Kästchen (ab 560 px) links neben dem Text, höchstens 40 % bzw. 440 px breit – das Kästchen ist rund 250 statt 773 px hoch. In schmalen Kästchen (mehrere Infos nebeneinander, Handy) bleibt es oben.
+  - Technik: Container-Abfrage auf dem Kästchen, neue innere Hülle `.auhof-info__karte`. Browser ohne Container-Abfragen zeigen das Bild oben wie bisher.
+- Geprüft auf der Testseite mit 1, 2 und 3 Infos bei 1280/820/390 px: Bild jeweils links bzw. oben wie vorgesehen, kein Überlauf, axe 0 Befunde; `infos-test.php` 35/35. Eintrag des Benutzers vorher gesichert und danach unverändert wiederhergestellt.
+
 ## 1.7.0 – 21.11.2026
 - **Pinnwand: Bild je Info** (`includes/infos.php`, `includes/infos-admin.php`, `assets/infos.css`, `assets/infos-admin.js`, `assets/admin.css`):
   - Im Backend „Bild wählen (optional)“ aus der Mediathek, „Bild ändern“, „Bild entfernen“ und die Darstellung „Klein, links neben dem Text“ oder „Groß, über der Überschrift“. Fehlt in der Mediathek der Alternativtext, erscheint ein roter Hinweis mit Link zum Bild.

@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.7.1 =
+* Pinnwand: großes Bild steht in breiten Kästchen (z. B. nur eine Info) links neben dem Text statt riesig darüber.
+
 = 1.7.0 =
 * Pinnwand: je Info optional ein Bild aus der Mediathek, „klein, links neben dem Text“ oder „groß, über der Überschrift“.
 

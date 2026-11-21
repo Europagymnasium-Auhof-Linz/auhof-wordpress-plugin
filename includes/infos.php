@@ -151,14 +151,14 @@ function auhof_infos_shortcode() {
 					'class'    => 'auhof-info__bild',
 					'loading'  => 'lazy',
 					'decoding' => 'async',
-					'sizes'    => $gross ? '(max-width: 700px) 100vw, 560px' : '96px',
+					'sizes'    => $gross ? '(max-width: 700px) 100vw, 440px' : '96px',
 				)
 			)
 			: '';
 		$klasse  = 'auhof-info' . ( $bild ? ' auhof-info--' . ( $gross ? 'gross' : 'klein' ) : '' );
-		$karten .= '<li class="' . esc_attr( $klasse ) . '">' . $bild . '<div class="auhof-info__inhalt"><h3 class="auhof-info__titel">' . $titel . '</h3>'
+		$karten .= '<li class="' . esc_attr( $klasse ) . '"><div class="auhof-info__karte">' . $bild . '<div class="auhof-info__inhalt"><h3 class="auhof-info__titel">' . $titel . '</h3>'
 			. ( '' !== $info['text'] ? '<p class="auhof-info__text">' . nl2br( wp_kses( $info['text'], auhof_infos_erlaubt(), array( 'http', 'https', 'mailto', 'tel' ) ) ) . '</p>' : '' )
-			. '</div></li>';
+			. '</div></div></li>';
 	}
 	if ( '' === $karten ) {
 		return '';
