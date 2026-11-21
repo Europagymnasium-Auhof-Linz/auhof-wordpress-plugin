@@ -39,7 +39,7 @@ function auhof_infos_eintrag_bereinigen( $e ) {
 	if ( '' === $titel ) {
 		return null;
 	}
-	$text = isset( $e['text'] ) && is_string( $e['text'] ) ? mb_substr( trim( sanitize_textarea_field( $e['text'] ) ), 0, 400 ) : '';
+	$text = isset( $e['text'] ) && is_string( $e['text'] ) ? auhof_infos_text_bereinigen( $e['text'] ) : '';
 	$link = isset( $e['link'] ) && is_string( $e['link'] ) ? esc_url_raw( trim( $e['link'] ), array( 'http', 'https', 'mailto', 'tel' ) ) : '';
 	return array(
 		'anzeigen' => ! empty( $e['anzeigen'] ),
@@ -47,6 +47,35 @@ function auhof_infos_eintrag_bereinigen( $e ) {
 		'text'     => $text,
 		'link'     => $link,
 	);
+}
+
+/**
+ * Im Text erlaubtes HTML: Links (nur http, https, mailto, tel), fett, kursiv. Alles andere wird entfernt,
+ * auch Attribute wie onclick oder style.
+ *
+ * @return array<string,array<string,bool>>
+ */
+function auhof_infos_erlaubt() {
+	return array(
+		'a'      => array( 'href' => true ),
+		'strong' => array(),
+		'em'     => array(),
+		'b'      => array(),
+		'i'      => array(),
+	);
+}
+
+/**
+ * Text bereinigen: höchstens 1000 Zeichen, nur erlaubtes HTML, geschlossene Tags, Zeilenumbrüche bleiben.
+ *
+ * @param string $text Eingabe.
+ * @return string
+ */
+function auhof_infos_text_bereinigen( $text ) {
+	$text = trim( (string) wp_check_invalid_utf8( str_replace( "\r", '', $text ) ) );
+	$text = mb_substr( $text, 0, 1000 );
+	$text = force_balance_tags( wp_kses( $text, auhof_infos_erlaubt(), array( 'http', 'https', 'mailto', 'tel' ) ) );
+	return trim( wp_kses( $text, auhof_infos_erlaubt(), array( 'http', 'https', 'mailto', 'tel' ) ) );
 }
 
 /**
@@ -92,7 +121,7 @@ function auhof_infos_shortcode() {
 		$titel   = esc_html( $info['titel'] );
 		$titel   = '' !== $info['link'] ? '<a href="' . esc_url( $info['link'] ) . '">' . $titel . '</a>' : $titel;
 		$karten .= '<li class="auhof-info"><h3 class="auhof-info__titel">' . $titel . '</h3>'
-			. ( '' !== $info['text'] ? '<p class="auhof-info__text">' . nl2br( esc_html( $info['text'] ) ) . '</p>' : '' )
+			. ( '' !== $info['text'] ? '<p class="auhof-info__text">' . nl2br( wp_kses( $info['text'], auhof_infos_erlaubt(), array( 'http', 'https', 'mailto', 'tel' ) ) ) . '</p>' : '' )
 			. '</li>';
 	}
 	if ( '' === $karten ) {

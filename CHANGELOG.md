@@ -1,5 +1,9 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.6.2 – 21.11.2026
+- **Pinnwand: Links, fett, kursiv im Text** (`includes/infos.php`, `includes/infos-admin.php`): Statt alles HTML zu entfernen, lässt `wp_kses` nur `<a href>` (http, https, mailto, tel), `<strong>`, `<em>`, `<b>`, `<i>` durch – beim Speichern und nochmals bei der Ausgabe. Attribute wie `onclick`, `style`, `target` und alle anderen Tags (Bilder, Skripte, iframes) werden entfernt, offene Tags geschlossen. Textfeld jetzt bis 1000 Zeichen, mit Hinweis, was erlaubt ist.
+- Geprüft auf der Testseite: `tests/infos-test.php` 26/26 (u. a. `javascript:`-Link, `onclick`, `img`/`script`/`iframe`, offenes Tag), Sicherheitstest 58/58, PHPCS ohne Befund in den Pinnwand-Dateien, Semgrep 0 Befunde; Startseite mit Link und Fettschrift, axe 0 Befunde (Beispieleintrag danach entfernt).
+
 ## 1.6.1 – 21.11.2026
 - Menüpunkt und Seitentitel „Aktuelle Infos“ heißen jetzt **„Pinnwand“**; Standard-Überschrift auf der Startseite ebenfalls „Pinnwand“ (eine selbst eingetragene Überschrift bleibt). Interne Namen (`auhof_infos`, `[auhof_infos]`) unverändert.
 - Hinweis zum Abstand: Der Shortcode gehört **in** die graue Gruppe vor die Spalten „Aktuelles“/„Termine“. Als eigener Block zwischen zwei Gruppen addieren sich deren Innenabstände und der Blockabstand (auf der Hoster-Kopie gemessen rund 100 px darüber und 80 px darunter), und der Block steht außerhalb der Inhaltsbreite.

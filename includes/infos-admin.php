@@ -96,7 +96,8 @@ function auhof_infos_admin_eintrag( $nr, $info ) {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $id ); ?>-text"><?php esc_html_e( 'Kurzer Text (optional)', 'auhof-schulseiten' ); ?></label>
-			<textarea id="<?php echo esc_attr( $id ); ?>-text" name="<?php echo esc_attr( $name ); ?>[text]" rows="2" maxlength="400" class="widefat"<?php echo esc_attr( $aus ); ?>><?php echo esc_textarea( $info['text'] ); ?></textarea>
+			<textarea id="<?php echo esc_attr( $id ); ?>-text" name="<?php echo esc_attr( $name ); ?>[text]" rows="3" maxlength="1000" class="widefat" aria-describedby="<?php echo esc_attr( $id ); ?>-text-hilfe"<?php echo esc_attr( $aus ); ?>><?php echo esc_textarea( $info['text'] ); ?></textarea>
+			<span class="description" id="<?php echo esc_attr( $id ); ?>-text-hilfe"><?php echo esc_html__( 'Erlaubt: Link <a href="https://…">Linktext</a>, fett <strong>…</strong>, kursiv <em>…</em>. Anderes HTML wird entfernt.', 'auhof-schulseiten' ); ?></span>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $id ); ?>-link"><?php esc_html_e( 'Link (optional, z. B. Seite mit Details)', 'auhof-schulseiten' ); ?></label>

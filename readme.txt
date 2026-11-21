@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.6.2 =
+* Pinnwand: im Text sind Links, fett und kursiv erlaubt (wp_kses); anderes HTML wird weiter entfernt.
+
 = 1.6.1 =
 * Menüpunkt „Aktuelle Infos“ heißt jetzt „Pinnwand“ (auch Standard-Überschrift).
 
