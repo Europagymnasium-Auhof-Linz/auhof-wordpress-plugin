@@ -1,5 +1,15 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.0 – 21.11.2026
+- **Reihenfolge je Funktion im Organigramm:**
+  - Personen → Funktionen → Funktion bearbeiten zeigt alle Personen dieser Funktion mit einem Zahlenfeld. Eine kleinere Zahl steht weiter vorn; Personen ohne Zahl folgen alphabetisch.
+  - CSV-Spalte „Funktionen“ mit Zahl in Klammern, z. B. „Administration (2), QMS (3)“.
+  - Gespeichert in `_auhof_funktion_reihenfolge` bei der Person. Gespeichert wird nur bei gültiger Nonce, mit Bearbeitungsrecht und nur für Personen, die die Funktion haben.
+  - Das Feld „Reihenfolge“ der Person wirkt nur noch auf der Kontakt-Seite.
+  - Beim Update wird die bisherige Reihenfolge je Funktion als 1, 2, 3 … festgeschrieben (Datenstand 3); das Organigramm sieht danach gleich aus.
+- Klassenvorstände je Klasse jetzt rein alphabetisch.
+- CSV-Test bricht ab, bevor er etwas ändert, wenn Export → Import nicht verlustfrei ist.
+
 ## 1.3.1 – 21.11.2026
 - **Neues Feld „Funktion“** (`_auhof_funktion`) getrennt von „Fächer“ (`_auhof_zusatz`); auch als CSV-Spalte (alte Spalte „Fächer / Funktion“ wird weiter als Fächer erkannt).
 - **Ansichten** `[auhof_personen ansicht="lehrkraft|kontakt"]`: Lehrkräfte alphabetisch mit Fächern, ohne Foto und Telefon; Kontakt mit Funktion, Foto und Telefon.

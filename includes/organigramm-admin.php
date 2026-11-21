@@ -45,6 +45,70 @@ function auhof_organigramm_felder_bearbeiten( $term ) {
 			<p class="description"><?php esc_html_e( 'Buchstaben der Klassen dieses Zweigs, z. B. „A-E“ oder „F, G“.', 'auhof-schulseiten' ); ?></p></td>
 	</tr>
 	<?php
+	$personen = auhof_organigramm_funktion_personen( $term->term_id );
+	if ( ! $personen ) {
+		return;
+	}
+	?>
+	<tr class="form-field">
+		<th scope="row"><?php esc_html_e( 'Personen im Organigramm', 'auhof-schulseiten' ); ?></th>
+		<td>
+			<table class="auhof-funktion-personen" role="presentation">
+				<?php foreach ( $personen as $p ) : ?>
+					<tr>
+						<td><input type="number" class="small-text" id="auhof-reihe-<?php echo esc_attr( (string) $p['id'] ); ?>" name="auhof_personen_reihe[<?php echo esc_attr( (string) $p['id'] ); ?>]" value="<?php echo esc_attr( $p['zahl'] ? (string) $p['zahl'] : '' ); ?>" min="0" max="999"></td>
+						<td><label for="auhof-reihe-<?php echo esc_attr( (string) $p['id'] ); ?>"><?php echo esc_html( $p['name'] ); ?></label><?php echo 'publish' !== $p['status'] ? ' <em>(' . esc_html__( 'Entwurf', 'auhof-schulseiten' ) . ')</em>' : ''; ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</table>
+			<p class="description"><?php esc_html_e( 'Reihenfolge in dieser Funktion: kleinere Zahl steht weiter vorn. Ohne Zahl: nach den nummerierten Personen, alphabetisch.', 'auhof-schulseiten' ); ?></p>
+		</td>
+	</tr>
+	<?php
+}
+
+/**
+ * Personen, die genau diese Funktion haben (ohne Unterfunktionen), in der Reihenfolge des Organigramms.
+ *
+ * @param int $term_id Funktion.
+ * @return array<int,array{id:int,name:string,zahl:int,status:string}>
+ */
+function auhof_organigramm_funktion_personen( $term_id ) {
+	$liste = array();
+	foreach ( get_posts(
+		array(
+			'post_type'   => 'auhof_person',
+			'post_status' => array( 'publish', 'draft' ),
+			'numberposts' => -1,
+			'tax_query'   => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- nur im Backend, wenige Personen.
+				array(
+					'taxonomy'         => 'auhof_funktion',
+					'field'            => 'term_id',
+					'terms'            => (int) $term_id,
+					'include_children' => false,
+				),
+			),
+		)
+	) as $post ) {
+		$reihe    = auhof_funktion_reihenfolge( $post->ID );
+		$zahl     = isset( $reihe[ $term_id ] ) ? $reihe[ $term_id ] : 0;
+		$nachname = (string) get_post_meta( $post->ID, '_auhof_nachname', true );
+		$vorname  = (string) get_post_meta( $post->ID, '_auhof_vorname', true );
+		$liste[]  = array(
+			'id'         => $post->ID,
+			'name'       => trim( $vorname . ' ' . $nachname ),
+			'zahl'       => $zahl,
+			'status'     => $post->post_status,
+			'sortierung' => ( $zahl ? sprintf( '0%03d', $zahl ) : '1' ) . auhof_personen_sortierschluessel( $nachname . ' ' . $vorname ),
+		);
+	}
+	usort(
+		$liste,
+		function ( $a, $b ) {
+			return strcmp( $a['sortierung'], $b['sortierung'] );
+		}
+	);
+	return $liste;
 }
 
 add_action( 'created_auhof_funktion', 'auhof_organigramm_felder_speichern' );
@@ -70,6 +134,19 @@ function auhof_organigramm_felder_speichern( $term_id ) {
 	if ( isset( $_POST['auhof_klassen'] ) ) {
 		$klassen = implode( ', ', auhof_organigramm_buchstaben_text( sanitize_text_field( wp_unslash( $_POST['auhof_klassen'] ) ) ) );
 		update_term_meta( $term_id, 'auhof_klassen', $klassen );
+	}
+	if ( isset( $_POST['auhof_personen_reihe'] ) && is_array( $_POST['auhof_personen_reihe'] ) ) {
+		$eingabe = array_map( 'absint', wp_unslash( $_POST['auhof_personen_reihe'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sofort auf Zahlen reduziert.
+		foreach ( $eingabe as $post_id => $zahl ) {
+			$post_id = absint( $post_id );
+			// Nur Personen, die diese Funktion wirklich haben und die der Benutzer bearbeiten darf.
+			if ( ! $post_id || 'auhof_person' !== get_post_type( $post_id ) || ! has_term( (int) $term_id, 'auhof_funktion', $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+				continue;
+			}
+			$reihe             = auhof_funktion_reihenfolge( $post_id );
+			$reihe[ $term_id ] = min( 999, $zahl );
+			auhof_funktion_reihenfolge_speichern( $post_id, $reihe );
+		}
 	}
 }
 

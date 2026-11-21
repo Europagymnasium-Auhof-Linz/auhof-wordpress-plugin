@@ -170,12 +170,17 @@ function auhof_csv_export_zeilen() {
 			} elseif ( 'gruppen' === $s || 'funktionen' === $s ) {
 				$ids     = wp_get_object_terms( $p->ID, 'gruppen' === $s ? 'auhof_gruppe' : 'auhof_funktion', array( 'fields' => 'ids' ) );
 				$namen   = 'gruppen' === $s ? $gruppen : $funktionen;
+				$reihe   = 'funktionen' === $s ? auhof_funktion_reihenfolge( $p->ID ) : array();
 				$zeile[] = implode(
 					', ',
 					array_filter(
 						array_map(
-							function ( $id ) use ( $namen ) {
-								return isset( $namen[ $id ] ) ? $namen[ $id ] : '';
+							function ( $id ) use ( $namen, $reihe ) {
+								if ( ! isset( $namen[ $id ] ) ) {
+									return '';
+								}
+								// Reihenfolge im Organigramm als Zahl in Klammern, z. B. „QMS (2)“.
+								return $namen[ $id ] . ( isset( $reihe[ $id ] ) ? ' (' . $reihe[ $id ] . ')' : '' );
 							},
 							is_array( $ids ) ? $ids : array()
 						)
@@ -246,7 +251,7 @@ function auhof_csv_lesen( $pfad ) {
  * @param int               $zeile    Zeilennummer.
  * @return int[]
  */
-function auhof_csv_begriffe_zuordnen( $zelle, $begriffe, &$warnungen, $art, $zeile ) {
+function auhof_csv_begriffe_zuordnen( $zelle, $begriffe, &$warnungen, $art, $zeile, &$nummern = null ) {
 	$index = array();
 	foreach ( $begriffe as $name => $id ) {
 		$index[ auhof_personen_sortierschluessel( $name ) ] = $id;
@@ -260,9 +265,17 @@ function auhof_csv_begriffe_zuordnen( $zelle, $begriffe, &$warnungen, $art, $zei
 		if ( '' === $teil ) {
 			continue;
 		}
+		$nummer = 0;
+		if ( null !== $nummern && preg_match( '/^(.*?)\s*\((\d{1,3})\)$/u', $teil, $m ) ) {
+			$teil   = $m[1];
+			$nummer = (int) $m[2];
+		}
 		$k = auhof_personen_sortierschluessel( $teil );
 		if ( isset( $index[ $k ] ) ) {
 			$ids[] = $index[ $k ];
+			if ( $nummer ) {
+				$nummern[ $index[ $k ] ] = $nummer;
+			}
 		} else {
 			/* translators: 1: Zeile, 2: Art, 3: Wert */
 			$warnungen[] = sprintf( __( 'Zeile %1$d: %2$s „%3$s“ unbekannt – ignoriert.', 'auhof-schulseiten' ), $zeile, $art, $teil );
@@ -298,13 +311,14 @@ function auhof_csv_planen( $csv ) {
 			'numberposts' => -1,
 		)
 	) as $p ) {
-		$b = array(
+		$b                   = array(
 			'id'          => $p->ID,
 			'titel'       => $p->post_title,
 			'reihenfolge' => (int) $p->menu_order,
 			'gruppen'     => wp_get_object_terms( $p->ID, 'auhof_gruppe', array( 'fields' => 'ids' ) ),
 			'funktionen'  => wp_get_object_terms( $p->ID, 'auhof_funktion', array( 'fields' => 'ids' ) ),
 		);
+		$b['funktion_reihe'] = array_intersect_key( auhof_funktion_reihenfolge( $p->ID ), array_flip( array_map( 'intval', (array) $b['funktionen'] ) ) );
 		foreach ( array_keys( auhof_personen_felder() ) as $f ) {
 			$b[ $f ] = (string) get_post_meta( $p->ID, '_auhof_' . $f, true );
 		}
@@ -386,7 +400,9 @@ function auhof_csv_planen( $csv ) {
 			$aktion['gruppen'] = array( $gruppen['Lehrkräfte'] );
 		}
 		if ( array_key_exists( 'funktionen', $w ) ) {
-			$aktion['funktionen'] = auhof_csv_begriffe_zuordnen( $w['funktionen'], $funktionen, $warnungen, __( 'Funktion', 'auhof-schulseiten' ), $zeile );
+			$nummern                  = array();
+			$aktion['funktionen']     = auhof_csv_begriffe_zuordnen( $w['funktionen'], $funktionen, $warnungen, __( 'Funktion', 'auhof-schulseiten' ), $zeile, $nummern );
+			$aktion['funktion_reihe'] = auhof_funktion_reihenfolge_bereinigen( $nummern );
 		}
 		if ( array_key_exists( 'reihenfolge', $w ) && '' !== $w['reihenfolge'] ) {
 			$aktion['reihenfolge'] = min( 9999, absint( $w['reihenfolge'] ) );
@@ -414,6 +430,9 @@ function auhof_csv_planen( $csv ) {
 						$aenderungen[] = $label;
 					}
 				}
+			}
+			if ( isset( $aktion['funktion_reihe'] ) && $aktion['funktion_reihe'] !== $alt['funktion_reihe'] ) {
+				$aenderungen[] = __( 'Reihenfolge im Organigramm', 'auhof-schulseiten' );
 			}
 			if ( isset( $aktion['reihenfolge'] ) && $aktion['reihenfolge'] !== $alt['reihenfolge'] ) {
 				$aenderungen[] = __( 'Reihenfolge', 'auhof-schulseiten' );
@@ -561,6 +580,9 @@ function auhof_csv_anwenden( $plan, $gewaehlt ) {
 		if ( isset( $a['funktionen'] ) ) {
 			wp_set_object_terms( $id, array_map( 'intval', $a['funktionen'] ), 'auhof_funktion' );
 		}
+		if ( isset( $a['funktion_reihe'] ) ) {
+			auhof_funktion_reihenfolge_speichern( $id, $a['funktion_reihe'] );
+		}
 	}
 
 	// Nur ausdrücklich angehakte und in der Vorschau aufgeführte Personen in den Papierkorb.
@@ -654,6 +676,7 @@ function auhof_csv_seite() {
 
 	echo '<h2>' . esc_html__( 'Import', 'auhof-schulseiten' ) . '</h2>';
 	echo '<p>' . esc_html__( 'Spalten wie im Export. Personen werden über ID, sonst E-Mail, sonst Vor- und Nachname erkannt. Fehlende Spalten bleiben unverändert, leere Zellen löschen den Wert. Mehrere Gruppen oder Funktionen mit Komma trennen.', 'auhof-schulseiten' ) . '</p>';
+	echo '<p>' . esc_html__( 'Reihenfolge im Organigramm: Zahl in Klammern hinter der Funktion, z. B. „Deutsch (1), QMS (3)“. Kleinere Zahl steht weiter vorn; ohne Zahl alphabetisch nach den nummerierten.', 'auhof-schulseiten' ) . '</p>';
 	echo '<form method="post" enctype="multipart/form-data" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 	wp_nonce_field( 'auhof_personen_import_pruefen' );
 	echo '<input type="hidden" name="action" value="auhof_personen_import_pruefen">';

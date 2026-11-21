@@ -244,6 +244,95 @@ function auhof_organigramm_kinder( $eltern ) {
 }
 
 /**
+ * Reihenfolge einer Person innerhalb ihrer Funktionen (Organigramm).
+ * Meta `_auhof_funktion_reihenfolge` = { Funktions-ID: Zahl 1–999 }. Ohne Zahl steht die Person nach den
+ * nummerierten Personen, alphabetisch.
+ *
+ * @param int $post_id Person.
+ * @return array<int,int>
+ */
+function auhof_funktion_reihenfolge( $post_id ) {
+	$roh = get_post_meta( $post_id, '_auhof_funktion_reihenfolge', true );
+	return auhof_funktion_reihenfolge_bereinigen( is_array( $roh ) ? $roh : array() );
+}
+
+/**
+ * Nur positive ganze Zahlen (max. 999) je Funktions-ID behalten.
+ *
+ * @param mixed $werte Rohwerte.
+ * @return array<int,int>
+ */
+function auhof_funktion_reihenfolge_bereinigen( $werte ) {
+	$sauber = array();
+	foreach ( (array) $werte as $term_id => $zahl ) {
+		$term_id = absint( $term_id );
+		$zahl    = is_numeric( $zahl ) ? min( 999, max( 0, (int) $zahl ) ) : 0;
+		if ( $term_id && $zahl ) {
+			$sauber[ $term_id ] = $zahl;
+		}
+	}
+	ksort( $sauber );
+	return $sauber;
+}
+
+/**
+ * Reihenfolge speichern (leer = Meta entfernen).
+ *
+ * @param int   $post_id Person.
+ * @param array $werte   { Funktions-ID: Zahl }.
+ */
+function auhof_funktion_reihenfolge_speichern( $post_id, $werte ) {
+	$sauber = auhof_funktion_reihenfolge_bereinigen( $werte );
+	if ( $sauber ) {
+		update_post_meta( $post_id, '_auhof_funktion_reihenfolge', $sauber );
+	} else {
+		delete_post_meta( $post_id, '_auhof_funktion_reihenfolge' );
+	}
+}
+
+add_action( 'init', 'auhof_organigramm_reihenfolge_uebernehmen', 21 );
+
+/**
+ * Einmalige Datenaktualisierung (Datenstand 3, Plugin 1.4.0): Bis 1.3.1 ordnete das Organigramm nach dem Feld
+ * „Reihenfolge“ der Person (gilt für alle Funktionen), dann alphabetisch. Diese Reihenfolge wird je Funktion als
+ * 1, 2, 3 … festgeschrieben, damit das Organigramm nach dem Update gleich aussieht.
+ */
+function auhof_organigramm_reihenfolge_uebernehmen() {
+	$stand = (int) get_option( 'auhof_personen_datenstand', 1 );
+	if ( $stand >= 3 || $stand < 2 ) {
+		return;
+	}
+	update_option( 'auhof_personen_datenstand', 3, false );
+	$mitglieder = array();
+	foreach ( get_posts(
+		array(
+			'post_type'   => 'auhof_person',
+			'post_status' => array( 'publish', 'draft' ),
+			'numberposts' => -1,
+		)
+	) as $post ) {
+		$schluessel = sprintf( '%05d', (int) $post->menu_order ) . auhof_personen_sortierschluessel( get_post_meta( $post->ID, '_auhof_nachname', true ) . ' ' . get_post_meta( $post->ID, '_auhof_vorname', true ) ) . '#' . $post->ID;
+		$terme      = wp_get_object_terms( $post->ID, 'auhof_funktion', array( 'fields' => 'ids' ) );
+		foreach ( is_array( $terme ) ? $terme : array() as $term_id ) {
+			$mitglieder[ (int) $term_id ][ $post->ID ] = $schluessel;
+		}
+	}
+	$reihen = array();
+	foreach ( $mitglieder as $term_id => $liste ) {
+		asort( $liste, SORT_STRING );
+		$n = 0;
+		foreach ( array_keys( $liste ) as $post_id ) {
+			$reihen[ $post_id ][ $term_id ] = ++$n;
+		}
+	}
+	foreach ( $reihen as $post_id => $reihe ) {
+		if ( ! get_post_meta( $post_id, '_auhof_funktion_reihenfolge', true ) ) {
+			auhof_funktion_reihenfolge_speichern( $post_id, $reihe );
+		}
+	}
+}
+
+/**
  * Alle veröffentlichten Personen mit Funktionen und Klasse.
  *
  * @return array{nach_funktion:array<int,array<int,array<string,mixed>>>,klassen:array<string,array<int,array<string,mixed>>>}
@@ -255,20 +344,27 @@ function auhof_organigramm_daten() {
 			'post_status'    => 'publish',
 			'posts_per_page' => 500,
 			'no_found_rows'  => true,
-			'orderby'        => 'menu_order',
+			'orderby'        => 'title',
 			'order'          => 'ASC',
 		)
 	);
 	$nach_funktion = array();
 	$klassen       = array();
 	foreach ( $abfrage->posts as $post ) {
-		$p     = array(
+		$schluessel = auhof_personen_sortierschluessel( get_post_meta( $post->ID, '_auhof_nachname', true ) . ' ' . get_post_meta( $post->ID, '_auhof_vorname', true ) );
+		$p          = array(
 			'name'       => trim( get_post_meta( $post->ID, '_auhof_vorname', true ) . ' ' . get_post_meta( $post->ID, '_auhof_nachname', true ) ),
-			'sortierung' => sprintf( '%05d', (int) $post->menu_order ) . auhof_personen_sortierschluessel( get_post_meta( $post->ID, '_auhof_nachname', true ) . ' ' . get_post_meta( $post->ID, '_auhof_vorname', true ) ),
+			'sortierung' => '1' . $schluessel,
 		);
-		$terme = get_the_terms( $post, 'auhof_funktion' );
+		$reihe      = auhof_funktion_reihenfolge( $post->ID );
+		$terme      = get_the_terms( $post, 'auhof_funktion' );
 		foreach ( is_array( $terme ) ? $terme : array() as $t ) {
-			$nach_funktion[ $t->term_id ][] = $p;
+			// Nummerierte Personen zuerst (nach Zahl), danach alle ohne Zahl alphabetisch.
+			$eintrag = $p;
+			if ( isset( $reihe[ $t->term_id ] ) ) {
+				$eintrag['sortierung'] = sprintf( '0%03d', $reihe[ $t->term_id ] ) . $schluessel;
+			}
+			$nach_funktion[ $t->term_id ][] = $eintrag;
 		}
 		foreach ( preg_split( '/[,;\s]+/', strtoupper( (string) get_post_meta( $post->ID, '_auhof_klasse', true ) ) ) as $klasse ) {
 			if ( preg_match( '/^\d[A-Z]{1,3}$/', $klasse ) ) {
