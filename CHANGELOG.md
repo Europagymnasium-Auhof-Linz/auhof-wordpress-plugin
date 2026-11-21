@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.2 – 21.11.2026
+- **Raumplan drucken** (`assets/raumplan.css`, Druckregeln am Ende):
+  - Ursache: Im Druck behielt der Plan seine Bildschirmgröße (nach „+“ bis 300 %, „Alle“ als hoher Gesamtplan). Er war damit größer als eine Seite und ließ sich nicht teilen. Seite 1 enthielt dann nur die Überschrift, Seite 2 den Plan, Seite 3 den Überhang.
+  - Lösung: Im Druck ist der Plan immer seitenbreit und höchstens 21 cm (Hochformat) bzw. 14 cm (Querformat) hoch, im Raster je Stockwerk 9,5/6,5 cm. Der Block wird nicht getrennt.
+  - Geprüft: 80 Kombinationen (Bildschirm 1920/390 px, alle Ansichten, normal/vergrößert/verkleinert, A4 und Letter, hoch und quer), jeweils genau 1 Seite. Die Darstellung am Bildschirm ist unverändert.
+
 ## 1.4.1 – 21.11.2026
 - **Raumplan am Handy:**
   - „−“ verkleinert die Stockwerksansicht in Stufen (75 %, 50 %) bis „ganzer Plan sichtbar“.
