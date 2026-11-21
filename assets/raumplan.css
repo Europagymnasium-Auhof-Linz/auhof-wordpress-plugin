@@ -75,21 +75,6 @@
 #raumplan svg.rp-druck-stock { display:block; margin:0; min-width:0 !important; }
 #raumplan .rp-druck-stock .rp-room:not(.rp-hl) { fill:transparent; }
 }
-/* Handy und Safari (Klasse .rp-druck--drehbar von raumplan.js): statt der Druckseite die bereits gedrehte Grafik
-   .rp-druck-bild drucken – hochkant, Plan quer darauf, auf Seitenbreite skaliert. Keine Abfrage (orientation) und
-   keine CSS-Drehung: Safari baut die Druckseite nach der Fensterbreite auf und wertet beides nicht verlässlich aus. */
-#raumplan .rp-druck-bild { display:none; }
-@media print {
-#raumplan .rp-druck--drehbar .rp-druck-inhalt { display:none !important; }
-#raumplan .rp-druck--drehbar svg.rp-druck-bild { display:block !important; width:100% !important; height:auto !important; min-width:0 !important; max-width:100% !important; margin:0 !important; }
-}
-/* Android, im Druckdialog selbst Querformat gewählt: normale Druckseite statt der hochkanten Grafik (sonst 2 Seiten).
-   Auf Android folgt (orientation) dem Papier, weil raumplan.js dort @page { size: auto } setzt. */
-@media print and (orientation: landscape) {
-#raumplan .rp-druck--drehbar .rp-druck-inhalt { display:block !important; }
-#raumplan .rp-druck--drehbar svg.rp-druck-bild { display:none !important; }
-}
-}
 /* Schmaleres Papier (Hochformat, Safari ohne @page-Format, größerer Rand): Stockwerke schrumpfen gemeinsam über
    flex-shrink bzw. Prozentbreiten. Keine Abfrage (orientation: portrait) – Chrome wertet sie gegen das
    voreingestellte Hochformat aus, bevor @page greift, und würde auch quer verkleinern. */

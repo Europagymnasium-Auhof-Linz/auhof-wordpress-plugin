@@ -91,11 +91,10 @@ function auhof_raumplan_html( $admin = false ) {
 		'before'
 	);
 
-	$drucken = $admin ? '' : '<button type="button" class="rp-print">' . esc_html__( 'Drucken', 'auhof-schulseiten' ) . '</button>';
+	// Ausgabe zum Drucken und Speichern: das fertige PDF (A4 quer). Ein eigener Druckknopf entfällt – das Drucken der
+	// Webseite lässt sich in Safari und am Handy nicht verlässlich auf Querformat bringen.
 	$pdf     = $admin ? '' : auhof_raumplan_pdf_url();
-	if ( $pdf ) {
-		$drucken .= '<a class="rp-pdf" href="' . esc_url( $pdf ) . '" type="application/pdf">' . esc_html__( 'PDF', 'auhof-schulseiten' ) . '<span class="screen-reader-text"> ' . esc_html__( '– ganzer Raumplan, A4 quer', 'auhof-schulseiten' ) . '</span></a>';
-	}
+	$drucken = $pdf ? '<a class="rp-pdf" href="' . esc_url( $pdf ) . '" type="application/pdf">' . esc_html__( 'Drucken (PDF)', 'auhof-schulseiten' ) . '<span class="screen-reader-text"> ' . esc_html__( '– ganzer Raumplan, A4 quer', 'auhof-schulseiten' ) . '</span></a>' : '';
 	return '<div id="raumplan">'
 		. '<div class="rp-bar">'
 		. '<span class="rp-year"></span>'

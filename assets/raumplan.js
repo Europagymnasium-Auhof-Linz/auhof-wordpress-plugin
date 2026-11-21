@@ -117,35 +117,9 @@
 	druck.className = 'rp-druck';
 	druck.setAttribute('aria-hidden', 'true');
 	root.appendChild(druck);
-	// Handy-Browser (Android, iOS – auch Brave, Chrome, Firefox dort) und Safari übernehmen das Seitenformat aus
-	// @page nicht und drucken hochkant. Dort wird die Druckseite bei Hochformat um 90° gedreht (raumplan.css,
-	// .rp-druck--drehbar): Der Plan liegt quer auf dem Blatt. Wählt man selbst Querformat, bleibt er ungedreht.
-	function ohneSeitenformat() {
-		var ua = navigator.userAgent || '';
-		if (navigator.userAgentData && navigator.userAgentData.mobile) return true;
-		if (/Android|iPhone|iPad|iPod/i.test(ua)) return true;
-		if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return true; // iPad mit Desktop-Kennung
-		return /Safari/.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua); // Safari am Mac
-	}
 	function druckBauen() {
 		var a = druckAnordnung();
 		while (druck.firstChild) druck.removeChild(druck.firstChild);
-		// Gedrehte Grafik nur auf Android (dort bestätigt). Safari/WebKit (Mac, iOS) verschiebt sie beim Seitenumbruch
-		// bzw. druckt sie gar nicht (1.4.10/1.4.11); dort bleibt die normale Druckseite, die im Hochformat
-		// verkleinert auf eine Seite passt (bestätigter Stand 1.4.9) – Querformat im Druckdialog wählen.
-		var ohneFormat = ohneSeitenformat();
-		var drehbar = ohneFormat && /Android/i.test(navigator.userAgent || '');
-		druck.className = 'rp-druck' + (drehbar ? ' rp-druck--drehbar' : '');
-		// Android-Browser bauen die Seite nach @page quer auf, drucken aber auf hochkant liegendes Papier und
-		// verkleinern die Querseite darauf. Daher auf diesen Geräten Seitenformat = Papier („auto“); dann passen
-		// Seite, Papier und die Abfrage (orientation) zusammen. Diese Regel steht zuletzt im Kopf und gewinnt.
-		var seite = document.getElementById('rp-druck-seite');
-		if (ohneFormat && !seite) {
-			seite = document.createElement('style');
-			seite.id = 'rp-druck-seite';
-			seite.textContent = '@page { size: auto; margin: 8mm; }';
-			document.head.appendChild(seite);
-		}
 		var inhalt = document.createElement('div');
 		inhalt.className = 'rp-druck-inhalt';
 		druck.appendChild(inhalt);
@@ -186,54 +160,6 @@
 				box.appendChild(c);
 			});
 		});
-		if (drehbar) druck.appendChild(druckBild(a));
-	}
-	// Handy und Safari: eine einzige, bereits um 90° gedrehte Grafik (hochkant, Plan liegt quer darauf). Der Browser
-	// muss sie nur auf Seitenbreite skalieren – das tun alle zuverlässig, auch Safari, das Seiten nach der
-	// Fensterbreite aufbaut und Formatvorgaben sowie (orientation) nicht verlässlich beachtet.
-	// Einheiten: 1 = 1 mm. Seitenverhältnis 1,24 passt auf A4 und Letter hochkant samt Rand und Kopf-/Fußzeile
-	// (Safari druckt sie standardmäßig mit).
-	var BILD_VERHAELTNIS = 1.24;
-	function druckBild(a) {
-		var B = DRUCK.breite, H = DRUCK.hoehe, g = DRUCK.abstand, T = DRUCK.titel;
-		var breite = Math.max(H, B / BILD_VERHAELTNIS);
-		var bild = el('svg', { 'class': 'rp-druck-bild', viewBox: '0 0 ' + breite.toFixed(2) + ' ' + B, 'aria-hidden': 'true', focusable: 'false' });
-		var defs = el('defs', {}, bild);
-		// Querformat-Inhalt (B × H) drehen: rechts oben beginnend, im Uhrzeigersinn, waagrecht mittig.
-		var quer = el('g', { transform: 'translate(' + ((breite - H) / 2 + H).toFixed(2) + ' 0) rotate(90)' }, bild);
-		el('text', { x: 0, y: 4.5, 'font-size': 4.2, 'font-weight': 'bold' }, quer).textContent = 'Raumplan · ' + P.year;
-		function w(id) { return stockRahmen[id][2] * a.mm; }
-		function h(id) { return stockRahmen[id][3] * a.mm; }
-		var plaetze = {};
-		if (a.art === 'spalten') {
-			var sb = a.gruppen.map(function (gr) { return Math.max.apply(null, gr.map(w)); });
-			var x = (B - (sb[0] + g + sb[1])) / 2;
-			a.gruppen.forEach(function (gr, k) {
-				var y = T;
-				gr.forEach(function (id) { plaetze[id] = [x, y]; y += h(id) + g; });
-				x += sb[k] + g;
-			});
-		} else {
-			var y = T;
-			a.gruppen.forEach(function (gr) {
-				var zb = gr.reduce(function (s, id) { return s + w(id); }, 0) + g * (gr.length - 1), x = (B - zb) / 2;
-				gr.forEach(function (id) { plaetze[id] = [x, y]; x += w(id) + g; });
-				y += Math.max.apply(null, gr.map(h)) + g;
-			});
-		}
-		DRUCK_STOCK.forEach(function (id) {
-			var r = stockRahmen[id], s = a.mm, pos = plaetze[id];
-			var clip = el('clipPath', { id: 'rp-druck-clip-' + id }, defs);
-			el('rect', { x: r[0], y: r[1], width: r[2], height: r[3] }, clip);
-			var gStock = el('g', { transform: 'translate(' + (pos[0] - r[0] * s).toFixed(3) + ' ' + (pos[1] - r[1] * s).toFixed(3) + ') scale(' + s.toFixed(5) + ')', 'clip-path': 'url(#rp-druck-clip-' + id + ')' }, quer);
-			var c = svg.cloneNode(true);
-			Array.prototype.forEach.call(c.querySelectorAll('.rp-room'), function (p) {
-				if (P.rooms[+p.getAttribute('data-i')].f !== id) p.parentNode.removeChild(p);
-				else { p.removeAttribute('tabindex'); p.removeAttribute('role'); }
-			});
-			while (c.firstChild) gStock.appendChild(c.firstChild);
-		});
-		return bild;
 	}
 	window.addEventListener('beforeprint', druckBauen);
 
@@ -269,8 +195,6 @@
 		});
 	}
 	function gridOK() { return root.clientWidth >= 860; }
-	var printBtn = root.querySelector('.rp-print');
-	if (printBtn) printBtn.addEventListener('click', function () { druckBauen(); window.print(); });
 
 	/* Ansichten */
 	[['alle', 'Alle'], ['eg', 'EG'], ['1', '1. Stock'], ['2', '2. Stock'], ['3', '3. Stock']].forEach(function (v) {

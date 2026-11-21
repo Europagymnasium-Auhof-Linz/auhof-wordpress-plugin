@@ -1,5 +1,10 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.5.1 – 21.11.2026
+- **Raumplan: nur noch ein Knopf „Drucken (PDF)“** (`includes/raumplan.php`): Er öffnet das fertige PDF. Der bisherige Knopf „Drucken“ (Drucken der Webseite) entfällt, weil er in Safari und am Handy kein sauberes Querformat liefert.
+- **Aufgeräumt** (`assets/raumplan.js`, `assets/raumplan.css`): Geräte-Erkennung, gedrehte Grafik und `@page { size: auto }` für Handy/Safari entfernt (rund 110 Zeilen). Die einfache Druckseite für Strg+P bleibt.
+- Geprüft auf der Testseite: PDF-Test 18/18 (ohne Prototyp-Vergleich, der in 1.5.0 bestanden wurde; `raumplan-pdf.php` ist unverändert), Sicherheitstest 58/58, PHPCS 0 Fehler, Semgrep 0 Befunde, Seitentest 34/34, Tastatur 45/45, axe 0 Befunde. Ein Knopf bei 1280 und 390 px, Datei 200 `application/pdf`, Strg+P ergibt 1 Seite.
+
 ## 1.5.0 – 21.11.2026
 - **Raumplan als PDF** (`includes/raumplan-pdf.php`, Knopf „PDF“ in `includes/raumplan.php`, Stil in `assets/raumplan.css`):
   - Eigener PDF-Schreiber ohne fremde Bibliothek: A4 quer, alle Stockwerke im selben Maßstab, Vektor, Helvetica (eingebaut, keine Einbettung), rund 55 KB.
