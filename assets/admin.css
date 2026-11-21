@@ -27,3 +27,12 @@
 .auhof-dia-bild__knoepfe .auhof-dia-weg { margin-left: auto; }
 .auhof-dia-bild__hinweis { color: #b32d2e; font-weight: 600; }
 .auhof-dia-platz { border: 2px dashed #2271b1; border-radius: 4px; min-height: 200px; }
+
+/* Personen: Import/Export */
+.auhof-csv details { margin: 0 0 1em; }
+.auhof-csv summary { font-weight: 600; cursor: pointer; padding: 4px 0; }
+.auhof-csv-liste { columns: 3 220px; margin: 0.5em 0 0 1.2em; }
+.auhof-csv-liste li { break-inside: avoid; }
+.auhof-csv-fehlend { border: 1px solid #c3c4c7; padding: 8px 14px; margin: 0 0 1em; background: #fff; }
+.auhof-csv-fehlend legend { font-weight: 600; padding: 0 4px; }
+.auhof-maske__feld--klasse input { text-transform: uppercase; }

@@ -1,5 +1,18 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.3.0 – 21.11.2026
+- **Organigramm** `[auhof_organigramm]` (`includes/organigramm.php`, `organigramm-admin.php`, `assets/organigramm.css/js`):
+  - Gepflegt wird bei jeder Person: Feld „Klassenvorstand (Klasse)“ und Kasten „Funktionen“ (Taxonomie `auhof_funktion`, hierarchisch).
+  - Die oberste Ebene bestimmt die Darstellung: `leitung` (erste Funktion als Kopf), `zweige` (Koordination; Klassen nach Buchstaben im Feld „Klassen“, z. B. A-E), `fach-args` (Liste), sonst Kästen; Unterfunktionen erscheinen als Rollen.
+  - Gestaltung und Suche aus der Vorlage der Schule; Farben LISA blau, Kepler rot, eLLA violett, Leitung dunkelgrau. Nachnamen in normaler Schreibweise. Schuljahr automatisch ab September.
+  - Grundstruktur (46 Funktionen) wird angelegt, wenn noch keine existiert.
+- **CSV-Export/-Import der Personen** (`includes/personen-csv.php`, Personen → Import/Export):
+  - Excel-tauglich (Strichpunkt, UTF-8 mit BOM); Windows-1252 und Komma werden erkannt. Excel-Formeln werden beim Export mit `'` geschützt.
+  - Personen werden über ID, sonst E-Mail, sonst Vor- und Nachname erkannt.
+  - Vorschau ohne Änderung; „Nicht in der Datei“ kommt nur nach Anhaken in den Papierkorb (nur Einträge aus dieser Liste).
+  - Fehlende Spalten bleiben unverändert, leere Zellen löschen den Wert.
+- `auhof_personen_wert_bereinigen()` als gemeinsame Bereinigung für Maske und Import.
+
 ## 1.2.1 – 21.11.2026
 - **Bilder** (`includes/bilder.php`, neu):
   - Kamera- und GPS-Metadaten (EXIF/XMP/IPTC) werden verlustfrei aus verkleinerten Fassungen entfernt; Farbprofil und Pixel bleiben gleich. Beispiel: Vorschaubild 62,5 → 6,6 KB.

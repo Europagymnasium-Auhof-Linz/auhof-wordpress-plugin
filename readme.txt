@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ Backend → Diashow: Bilder wählen und ordnen (Ausschnitt oben/Mitte/unten), An
 = Bilder =
 Verkleinerte Fassungen (Zwischengrößen, „-scaled“) werden ohne Kamera- und GPS-Daten gespeichert (verlustfrei, Farbprofil bleibt); der Bestand wird nach dem Aktivieren bzw. einem Update schrittweise im Hintergrund bereinigt. Neue Zwischengrößen von JPEG-Fotos entstehen als WebP. Originale bleiben unverändert.
 
+= Organigramm =
+Bei jeder Person: Feld „Klassenvorstand (Klasse)“ und Kasten „Funktionen“ (Personen → Funktionen). [auhof_organigramm] erzeugt daraus das Organigramm (Leitung, Zweige mit Klassen, Fach-ARGEs, weitere Funktionen). Zweige ordnen Klassen über das Feld „Klassen“ (z. B. A-E) zu. Schuljahr automatisch (ab September).
+
+= Import/Export =
+Personen → Import/Export: CSV herunterladen (zugleich Vorlage), bearbeiten, hochladen. Vorschau zeigt neue, geänderte und fehlende Personen; fehlende nur nach Anhaken in den Papierkorb.
+
 = Technik =
 Nur WordPress-Standardfunktionen, keine REST-/AJAX-Endpunkte, keine externen Abrufe.
 Personen und Gruppen sind nicht öffentlich abrufbar, nur über die Shortcodes.
@@ -39,6 +45,10 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.3.0 =
+* Organigramm aus Funktionen und Klassenvorstand der Personen.
+* CSV-Export und -Import der Personen mit Vorschau.
+
 = 1.2.1 =
 * Bilder: Metadaten (EXIF/GPS) aus verkleinerten Fassungen entfernen, neue Zwischengrößen als WebP.
 * Raumplan am Handy: breitere, wischbare Stockwerksansicht und Zoom-Knöpfe.

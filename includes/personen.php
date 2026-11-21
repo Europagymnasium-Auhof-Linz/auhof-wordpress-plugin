@@ -21,6 +21,7 @@ function auhof_personen_felder() {
 		'zusatz'     => __( 'Fächer / Funktion', 'auhof-schulseiten' ),
 		'email'      => __( 'E-Mail', 'auhof-schulseiten' ),
 		'telefon'    => __( 'Telefon', 'auhof-schulseiten' ),
+		'klasse'     => __( 'Klassenvorstand (Klasse)', 'auhof-schulseiten' ),
 	);
 }
 
@@ -47,6 +48,29 @@ function auhof_schulseiten_rechte_fuer_beitragstyp() {
 		$rechte[ $grundrecht ] = $recht;
 	}
 	return $rechte;
+}
+
+/**
+ * Ein Feld einer Person bereinigen (Eingabemaske und CSV-Import).
+ *
+ * @param string $feld Feldname.
+ * @param mixed  $wert Rohwert.
+ * @return string
+ */
+function auhof_personen_wert_bereinigen( $feld, $wert ) {
+	$wert = is_scalar( $wert ) ? (string) $wert : '';
+	if ( 'email' === $feld ) {
+		$wert = sanitize_email( $wert );
+	} elseif ( 'telefon' === $feld ) {
+		$wert = trim( (string) preg_replace( '/[^0-9+\-\/() ]/', '', $wert ) );
+	} elseif ( 'klasse' === $feld ) {
+		// Eine oder mehrere Klassen, z. B. „3B“ oder „4L, 4M“.
+		preg_match_all( '/\d[A-Za-z]{1,3}/', $wert, $m );
+		$wert = implode( ', ', array_unique( array_map( 'strtoupper', $m[0] ) ) );
+	} else {
+		$wert = sanitize_text_field( $wert );
+	}
+	return mb_substr( $wert, 0, 200 );
 }
 
 add_action( 'init', 'auhof_personen_registrieren' );

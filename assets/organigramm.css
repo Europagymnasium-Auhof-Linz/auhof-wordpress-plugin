@@ -1,0 +1,100 @@
+/* Auhof Schulseiten – Organigramm ([auhof_organigramm]). Gestaltung aus der Vorlage der Schule; Farben: LISA blau, Kepler rot, eLLA violett, Leitung dunkelgrau. */
+.eg-org{--eg-lead:#374151;--eg-kepler:#b42318;--eg-ella:#6a2c91;--eg-lisa:#1f5fa8;--eg-tabe:#b45309;--eg-service:#3f5f8a;--eg-ink:#1f2933;--eg-muted:#5b6670;--eg-line:#e2e6ea;--eg-soft:#f3f5f7;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--eg-ink);line-height:1.4;max-width:1200px;margin:0 auto;padding:24px 16px 40px}
+.eg-org *{box-sizing:border-box}
+.eg-org h2,.eg-org h3,.eg-org p,.eg-org ul,.eg-org dl,.eg-org dd{margin:0;padding:0}
+.eg-org ul{list-style:none}
+
+/* Kopf + Suche */
+.eg-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:28px}
+.eg-title{font-size:clamp(1.5rem,1.1rem + 1.6vw,2.1rem);line-height:1.15}
+.eg-sub{color:var(--eg-muted);margin-top:4px}
+.eg-search{display:flex;align-items:center;gap:10px;flex:1 1 280px;max-width:420px}
+.eg-search input{flex:1;font:inherit;padding:10px 14px;border:1px solid #c9d0d6;border-radius:999px;background:#fff;min-width:0}
+.eg-search input:focus{outline:3px solid #9cc3ef;outline-offset:1px;border-color:var(--eg-lisa)}
+.eg-count{font-size:.85rem;color:var(--eg-muted);white-space:nowrap;min-width:5.5em}
+.eg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.eg-section{margin-top:36px}
+.eg-section-title{font-size:1.15rem;margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid var(--eg-line)}
+
+/* Karten */
+.eg-card{--c:var(--eg-service);background:#fff;border:1px solid var(--eg-line);border-top:4px solid var(--c);border-radius:10px;padding:12px 16px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+.eg-card h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--c);margin-bottom:4px}
+
+/* Leitungsebene */
+.eg-top{display:flex;flex-direction:column;align-items:center}
+.eg-head{--c:var(--eg-lead);background:var(--eg-lead);color:#fff;border:0;text-align:center;width:100%;max-width:440px;padding:16px 20px}
+.eg-head h3{color:#e5e7eb}
+.eg-head p{font-size:1.15rem;font-weight:600}
+.eg-staff{position:relative;display:grid;gap:14px;width:100%;margin-top:28px;grid-template-columns:1fr}
+.eg-staff::before{content:"";position:absolute;top:-28px;left:50%;height:28px;border-left:2px solid #c3c8cf}
+.eg-staff .eg-card{--c:var(--eg-lead);text-align:center}
+@media (min-width:720px){
+  .eg-staff{grid-template-columns:repeat(3,1fr);gap:20px}
+  .eg-staff::before{height:14px;top:-28px}
+  .eg-staff::after{content:"";position:absolute;top:-14px;left:16.66%;right:16.66%;border-top:2px solid #c3c8cf}
+  .eg-staff .eg-card{position:relative}
+  .eg-staff .eg-card::before{content:"";position:absolute;top:-18px;left:50%;height:14px;border-left:2px solid #c3c8cf}
+}
+
+/* Zweige & Klassen */
+.eg-branches{display:grid;gap:18px;grid-template-columns:1fr}
+@media (min-width:760px){.eg-branches{grid-template-columns:repeat(2,1fr)}.eg-branch--wide{grid-column:1/-1}}
+.eg-branch{--c:var(--eg-service);background:#fff;border:1px solid var(--eg-line);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06);align-self:start}
+.eg-branch--kepler{--c:var(--eg-kepler)}
+.eg-branch--ella{--c:var(--eg-ella)}
+.eg-branch--lisa{--c:var(--eg-lisa)}
+.eg-branch--tabe{--c:var(--eg-tabe)}
+.eg-branch-head{background:var(--c);color:#fff;padding:12px 16px}
+.eg-branch-head h3{font-size:1.2rem;letter-spacing:.02em}
+.eg-branch-head p{font-size:.9rem;opacity:.95;margin-top:2px}
+.eg-classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:6px;padding:12px}
+.eg-class{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px;background:var(--eg-soft)}
+.eg-badge{flex:0 0 auto;min-width:2.6em;text-align:center;font-weight:700;font-size:.85rem;padding:4px 6px;border-radius:6px;background:var(--c);color:#fff}
+.eg-name{font-size:.92rem;overflow-wrap:break-word;min-width:0}
+
+/* Fach-Arbeitsgemeinschaften */
+.eg-args{display:grid;grid-template-columns:1fr;gap:0 28px;background:#fff;border:1px solid var(--eg-line);border-radius:12px;padding:6px 16px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+@media (min-width:720px){.eg-args{grid-template-columns:repeat(2,1fr)}}
+.eg-arg{padding:9px 0;border-bottom:1px solid var(--eg-line)}
+.eg-arg dt{font-weight:600;color:var(--eg-service)}
+.eg-arg dd{font-size:.95rem}
+
+/* Weitere Funktionen */
+.eg-funcs{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.eg-funcs ul li+li{margin-top:6px}
+.eg-funcs .eg-role{display:block;font-size:.82rem;color:var(--eg-muted)}
+
+/* Suche: Treffer hervorheben */
+.eg-org [data-s]{transition:opacity .15s}
+.eg-org.is-searching [data-s]:not(.is-hit){opacity:.25}
+.eg-org .is-hit{outline:3px solid #f2b200;outline-offset:2px;border-radius:8px}
+
+@media print{
+  .eg-search{display:none!important}
+  .eg-card,.eg-branch,.eg-args{box-shadow:none}
+  .eg-card,.eg-branch,.eg-arg{break-inside:avoid}
+  .eg-org{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+/* Ergänzungen für die Einbindung in WordPress */
+.eg-org .eg-header{margin-bottom:20px}
+.eg-org .eg-sub{margin:0}
+.eg-org .eg-section-title{margin-top:0}
+.eg-org li{margin:0;max-width:none}
+.eg-org li::marker{content:none}
+/* Theme-Regeln für Überschriften und Listen übersteuern (:not(#_) hebt die Gewichtung) */
+.eg-org .eg-branch-head h3:not(#_){color:#fff;margin:0}
+
+.eg-org .eg-card h3:not(#_){color:var(--c);margin:0 0 4px}
+.eg-org ul.eg-classes:not(#_){padding:12px;margin:0;list-style:none}
+.eg-org .eg-funcs ul:not(#_){padding:0;margin:0;list-style:none}
+.eg-org dl.eg-args:not(#_){margin:0}
+.eg-org .eg-arg dd:not(#_){margin:0}
+.eg-org h2.eg-section-title:not(#_){font-size:1.15rem;margin:0 0 14px}
+.eg-org .eg-card.eg-head h3:not(#_){color:#e5e7eb}
+/* Alle Namen in derselben Größe wie bei „Weitere Funktionen“ (Schriftgröße des Seitentexts) */
+.eg-org .eg-name:not(#_),.eg-org .eg-arg dd:not(#_),.eg-org .eg-branch-head p:not(#_),.eg-org .eg-card p:not(#_),.eg-org .eg-funcs li:not(#_){font-size:inherit}
+.eg-org .eg-head p:not(#_){font-size:1.15em}
+/* Verbindungslinie genau von Kartenmitte zu Kartenmitte (3 Spalten, 20 px Abstand) */
+@media (min-width:720px){.eg-org .eg-staff::after{left:calc((100% - 40px) / 6);right:calc((100% - 40px) / 6)}}

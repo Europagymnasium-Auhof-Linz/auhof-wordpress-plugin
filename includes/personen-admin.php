@@ -75,15 +75,7 @@ function auhof_personen_eingaben() {
 	$roh   = isset( $_POST['auhof'] ) && is_array( $_POST['auhof'] ) ? wp_unslash( $_POST['auhof'] ) : array();
 	$werte = array();
 	foreach ( array_keys( auhof_personen_felder() ) as $feld ) {
-		$wert = isset( $roh[ $feld ] ) && is_string( $roh[ $feld ] ) ? $roh[ $feld ] : '';
-		if ( 'email' === $feld ) {
-			$wert = sanitize_email( $wert );
-		} elseif ( 'telefon' === $feld ) {
-			$wert = trim( preg_replace( '/[^0-9+\-\/() ]/', '', $wert ) );
-		} else {
-			$wert = sanitize_text_field( $wert );
-		}
-		$werte[ $feld ] = mb_substr( $wert, 0, 200 );
+		$werte[ $feld ] = auhof_personen_wert_bereinigen( $feld, isset( $roh[ $feld ] ) && is_string( $roh[ $feld ] ) ? $roh[ $feld ] : '' );
 	}
 	return $werte;
 }
@@ -138,12 +130,14 @@ add_filter( 'manage_auhof_person_posts_columns', 'auhof_personen_spalten' );
  */
 function auhof_personen_spalten( $spalten ) {
 	return array(
-		'cb'                    => $spalten['cb'],
-		'auhof_foto'            => __( 'Foto', 'auhof-schulseiten' ),
-		'title'                 => __( 'Name', 'auhof-schulseiten' ),
-		'auhof_zusatz'          => __( 'Fächer / Funktion', 'auhof-schulseiten' ),
-		'auhof_email'           => __( 'E-Mail', 'auhof-schulseiten' ),
-		'taxonomy-auhof_gruppe' => __( 'Gruppe', 'auhof-schulseiten' ),
+		'cb'                      => $spalten['cb'],
+		'auhof_foto'              => __( 'Foto', 'auhof-schulseiten' ),
+		'title'                   => __( 'Name', 'auhof-schulseiten' ),
+		'auhof_zusatz'            => __( 'Fächer / Funktion', 'auhof-schulseiten' ),
+		'auhof_email'             => __( 'E-Mail', 'auhof-schulseiten' ),
+		'taxonomy-auhof_gruppe'   => __( 'Gruppe', 'auhof-schulseiten' ),
+		'taxonomy-auhof_funktion' => __( 'Funktionen', 'auhof-schulseiten' ),
+		'auhof_klasse'            => __( 'KV', 'auhof-schulseiten' ),
 	);
 }
 
@@ -162,6 +156,8 @@ function auhof_personen_spalte( $spalte, $post_id ) {
 		echo esc_html( get_post_meta( $post_id, '_auhof_zusatz', true ) );
 	} elseif ( 'auhof_email' === $spalte ) {
 		echo esc_html( get_post_meta( $post_id, '_auhof_email', true ) );
+	} elseif ( 'auhof_klasse' === $spalte ) {
+		echo esc_html( get_post_meta( $post_id, '_auhof_klasse', true ) );
 	}
 }
 
@@ -197,7 +193,8 @@ function auhof_personen_admin_abfrage( $abfrage ) {
 	// Reiner Lesefilter der Übersicht (wie die Kategorie-Auswahl von WordPress), ändert keine Daten.
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$gruppe = isset( $_GET['auhof_gruppe'] ) ? sanitize_title( wp_unslash( $_GET['auhof_gruppe'] ) ) : '';
-	if ( '' !== $gruppe ) {
+	// „Alle Gruppen“ sendet den Wert 0 – dann nicht filtern.
+	if ( '' !== $gruppe && '0' !== $gruppe ) {
 		$abfrage->set(
 			'tax_query', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			array(
@@ -209,6 +206,30 @@ function auhof_personen_admin_abfrage( $abfrage ) {
 			)
 		);
 	}
+}
+
+add_filter( 'posts_search', 'auhof_personen_admin_suche', 10, 2 );
+
+/**
+ * Suche in der Übersicht: zusätzlich zu Vor- und Nachname (Titel) auch E-Mail/Kürzel, Fächer/Funktion und Klasse.
+ *
+ * @param string   $suche   SQL-Teil der Suche.
+ * @param WP_Query $abfrage Abfrage.
+ * @return string
+ */
+function auhof_personen_admin_suche( $suche, $abfrage ) {
+	global $wpdb;
+	$begriff = trim( (string) $abfrage->get( 's' ) );
+	if ( '' === $suche || '' === $begriff || ! is_admin() || ! $abfrage->is_main_query() || 'auhof_person' !== $abfrage->get( 'post_type' ) ) {
+		return $suche;
+	}
+	$like  = '%' . $wpdb->esc_like( $begriff ) . '%';
+	$extra = $wpdb->prepare(
+		"{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '_auhof_email', '_auhof_zusatz', '_auhof_klasse', '_auhof_nachname', '_auhof_vorname' ) AND meta_value LIKE %s )",
+		$like
+	);
+	// Die Suche von WordPress beginnt mit „ AND (“ – die zusätzliche Bedingung wird mit OR angehängt.
+	return preg_replace( '/^\s*AND\s*\(/', ' AND ( ' . $extra . ' OR ', $suche, 1 );
 }
 
 add_action( 'restrict_manage_posts', 'auhof_personen_gruppenfilter' );
