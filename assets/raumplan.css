@@ -52,17 +52,21 @@
 #raumplan .rp-search { flex-basis:100%; max-width:none; margin:0; }
 }
 @media print { #raumplan .rp-zoom { display:none; } }
-/* Druck: Plan immer auf eine Seite unter die Überschrift. Bildschirmgrößen (Zoom, Mindestbreite am Handy,
-   Breite über den Inhalt hinaus) gelten nicht; sonst rutscht der Plan als Ganzes auf Seite 2 und hinten
-   bleibt eine leere Seite. Feste Maße (cm), weil vh beim Drucken je nach Browser das Fenster meint;
-   Quer 14 cm (Raster 2 × 6,5 cm), hoch 21 cm (2 × 9,5 cm) – passt unter die Überschrift auf A4 und Letter. */
+/* Druck: Plan immer auf eine Seite unter die Überschrift.
+   1. Bildschirmgrößen (Zoom, Mindestbreite am Handy, Breite über den Inhalt hinaus) gelten nicht; sonst rutscht
+      der unteilbare Plan als Ganzes auf Seite 2.
+   2. Abstände und Mindesthöhen der umgebenden Seitenbereiche (Theme: 80 px oben/unten, Mindesthöhe = eine
+      Bildschirm- bzw. Seitenhöhe) entfallen; sonst entsteht hinten eine leere Seite.
+   3. Feste Höhen in cm, weil vh beim Drucken je nach Browser das Fenster meint. Reserve für Seitenränder bis
+      2 cm und Kopf-/Fußzeile: hoch 20 cm (Raster 2 × 9 cm), quer 13 cm (Raster 2 × 6 cm); A4 und Letter. */
 @media print {
+:has(#raumplan) { margin-top:0 !important; margin-bottom:0 !important; padding-top:0 !important; padding-bottom:0 !important; min-height:0 !important; height:auto !important; }
 #raumplan, #raumplan .rp-sheet { break-inside:avoid; page-break-inside:avoid; }
-#raumplan svg, #raumplan svg.rp-floor, #raumplan svg.rp-all { width:100% !important; min-width:0 !important; max-width:100% !important; height:auto !important; max-height:14cm !important; }
+#raumplan svg, #raumplan svg.rp-floor, #raumplan svg.rp-all { width:100% !important; min-width:0 !important; max-width:100% !important; height:auto !important; max-height:13cm !important; }
 #raumplan .rp-grid { gap:12px 16px; }
-#raumplan .rp-grid svg { max-height:6.5cm !important; }
+#raumplan .rp-grid svg { max-height:6cm !important; }
 }
 @media print and (orientation: portrait) {
-#raumplan svg, #raumplan svg.rp-floor, #raumplan svg.rp-all { max-height:21cm !important; }
-#raumplan .rp-grid svg { max-height:9.5cm !important; }
+#raumplan svg, #raumplan svg.rp-floor, #raumplan svg.rp-all { max-height:20cm !important; }
+#raumplan .rp-grid svg { max-height:9cm !important; }
 }

@@ -1,5 +1,12 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.3 – 21.11.2026
+- **Raumplan drucken, leere Seite am Ende** (`assets/raumplan.css`, Druckregeln am Ende):
+  - Ursache: Das Theme gibt dem Inhaltsbereich 80 px Abstand oben und unten und der Seite eine Mindesthöhe von einer Seitenhöhe. Mit Plan, Überschrift und diesen Abständen war der Inhalt etwas höher als eine Seite, besonders im Querformat und am Handy.
+  - Lösung: Beim Drucken verlieren alle Bereiche, die den Plan enthalten, diese Abstände und die Mindesthöhe. Die Planhöhe hat Reserve für Ränder bis 2 cm und Kopf-/Fußzeile: hoch 20 cm (Raster 9 cm), quer 13 cm (Raster 6 cm).
+  - Geprüft: 160 Fälle (Computer/Handy, alle Ansichten, normal/vergrößert/verkleinert, A4/Letter, hoch/quer, Rand 1 cm sowie 2 cm mit Kopf-/Fußzeile). Vorher ergaben 41 davon 2 Seiten, jetzt alle 1 Seite. Die Darstellung am Bildschirm ist unverändert (pixelgleich).
+  - Der Test in 1.4.2 lief ohne Seitenränder und hat den Fehler deshalb nicht gezeigt.
+
 ## 1.4.2 – 21.11.2026
 - **Raumplan drucken** (`assets/raumplan.css`, Druckregeln am Ende):
   - Ursache: Im Druck behielt der Plan seine Bildschirmgröße (nach „+“ bis 300 %, „Alle“ als hoher Gesamtplan). Er war damit größer als eine Seite und ließ sich nicht teilen. Seite 1 enthielt dann nur die Überschrift, Seite 2 den Plan, Seite 3 den Überhang.
