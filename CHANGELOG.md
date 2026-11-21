@@ -1,5 +1,12 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.11 – 21.11.2026
+- **Raumplan drucken in Safari, 2 Seiten** (Screenshot: Grafik begann weit unten auf Seite 1):
+  - Messung in Playwright-WebKit (Testseite und Hoster-Kopie): Layout korrekt, Grafik oben, Kasten richtig groß. Der Fehler entsteht erst in Safaris Seitenumbruch (nicht nachstellbar ohne Druckdialog).
+  - Zusätzlich für Safari/WebKit (Mac, iOS): Klasse `.rp-druck--fest` – Rahmen `position:fixed` auf der Seitenfläche, Grafik passt sich in Breite und Höhe ein, Fluss nur 1 px hoch. Android und Desktop unverändert.
+  - Lösung: Rahmen `.rp-druck-bildrahmen` mit fest berechnetem Seitenverhältnis (`padding-top` in %), Grafik füllt ihn absolut, `preserveAspectRatio="xMidYMin meet"`, zusätzlich `width`/`height` am SVG.
+  - Geprüft nur in Chromium (Android-, iPhone-, Safari-Kennung, Windows): je 1 Seite. In echtem Safari noch nicht bestätigt.
+
 ## 1.4.10 – 21.11.2026
 - **Raumplan drucken in Safari** (Mac-Screenshot: ungedreht, verkleinert):
   - Safari baut die Druckseite nach der Fensterbreite auf, skaliert auf die Papierbreite und wertet `(orientation)` nach dem Fenster aus. CSS-Drehung und Formatvorgaben greifen deshalb nicht.
