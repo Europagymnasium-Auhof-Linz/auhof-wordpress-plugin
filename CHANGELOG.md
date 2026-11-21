@@ -1,5 +1,12 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.8 – 21.11.2026
+- **Raumplan drucken am Handy, zweite Seite** (`assets/raumplan.css`):
+  - Ursache: Die gedrehte Fläche war 265 mm hoch und auf A4 berechnet. Android druckt häufig auf Letter (279 mm). Mit Rand blieben dort rund 263 mm, der untere bzw. rechte Teil des Plans brach auf eine zweite Seite um.
+  - Lösung: Fläche 175 × 230 mm. Sie passt auf A4 und Letter hochkant mit bis zu 17 mm Rand seitlich und 24 mm oben/unten; der Plan wird etwas kleiner (rund 83 % statt 96 % der Höhe).
+- Geprüft (simuliert mit Android-Kennung, ohne `@page`): A4 und Letter, hoch und quer, Rand 0/8/10/15/20 mm. Alle 20 Kombinationen ergeben 1 Seite, nichts abgeschnitten, Maßstab gleich. In 1.4.7 ergab Letter hoch ab 8 mm Rand 2 Seiten.
+- Hinweis: Der Test für 1.4.7 hatte nur A4 geprüft.
+
 ## 1.4.7 – 21.11.2026
 - **Raumplan drucken am Handy und in Safari** (`assets/raumplan.js`, `assets/raumplan.css`):
   - Diese Browser übernehmen die Vorgabe „A4 quer“ (`@page`) nicht und drucken hochkant. Eine Webseite kann das Querformat dort nicht erzwingen.
