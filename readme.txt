@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.12
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.5.0 =
+* Raumplan als PDF (A4 quer): wird beim Speichern am Server erzeugt, Knopf „PDF“ neben „Drucken“. Ohne fremde Bibliothek.
+
 = 1.4.12 =
 * Raumplan drucken: gedrehte Grafik nur auf Android; Safari wieder normale Druckseite (eine Seite).
 

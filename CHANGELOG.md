@@ -1,5 +1,21 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.5.0 – 21.11.2026
+- **Raumplan als PDF** (`includes/raumplan-pdf.php`, Knopf „PDF“ in `includes/raumplan.php`, Stil in `assets/raumplan.css`):
+  - Eigener PDF-Schreiber ohne fremde Bibliothek: A4 quer, alle Stockwerke im selben Maßstab, Vektor, Helvetica (eingebaut, keine Einbettung), rund 55 KB.
+  - Wird am Server erzeugt, wenn der Raumplan gespeichert wird, nach einem Plugin-Update und wenn die Datei fehlt – nur durch berechtigte Personen. Ablage: `uploads/auhof-raumplan/raumplan.pdf`; der Link trägt einen Versionsanhang.
+  - Der Knopf erscheint erst, wenn die Datei existiert (nach dem Update einmal ins Backend gehen).
+  - Ein markierter Raum ist im PDF nicht hervorgehoben (eine Datei für alle).
+- Geprüft mit dem JavaScript-Prototyp (`tests/raumplan-pdf-prototyp.mjs`, gleicher Ablauf):
+  - PDF gültig, 1 Seite A4 quer, Aussehen wie die Druckseite.
+  - Schrifteinpassung gegen den Browser verglichen: 139 Räume, gleiche Zeilenzahl und Drehung, Schriftgröße höchstens 2,7 % abweichend.
+- Geprüft auf der Testseite (PHP-Teil):
+  - `tests/raumplan-pdf-test.php` 19/19: Inhalt gleich wie der Prototyp (Abweichung nur Rundung der 3. Nachkommastelle), PDF-Aufbau (Positionen, Längen), keine aktiven Inhalte, Maskierung von Schadtext in Raumname/Schuljahr/Farbe, ohne Anmeldung keine Erzeugung, fester Ort.
+  - Speichern der Einstellung erzeugt die Datei neu (neuer Raumname mit Umlauten, neues Schuljahr, neue Adresse); danach zurückgestellt.
+  - Browser: Knopf „PDF“ bei 1280 und 390 px, Datei 200 `application/pdf`, 55 KB; Seitentest 34/34, Tastatur 45/45, axe 0 Befunde.
+  - Sicherheitstest 58/58, PHPCS 0 Fehler, PHP 7.4+ kompatibel, Semgrep 0 Befunde (30 Dateien).
+  - Nicht getestet: Drucken des PDFs aus Safari und vom Handy.
+
 ## 1.4.12 – 21.11.2026
 - **Raumplan drucken in Safari zurückgestellt** (Basis 1.4.10, `assets/raumplan.js`):
   - 1.4.10 (gedrehte Grafik im Fluss): in Safari 2 Seiten, Grafik nach unten verschoben. 1.4.11 (Grafik `position:fixed`): in Safari leere Seite. Beides ließ sich in Playwright-WebKit nicht nachstellen; Safaris Druck verhält sich anders als der Browserkern.

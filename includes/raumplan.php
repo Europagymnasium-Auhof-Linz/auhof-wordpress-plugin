@@ -92,6 +92,10 @@ function auhof_raumplan_html( $admin = false ) {
 	);
 
 	$drucken = $admin ? '' : '<button type="button" class="rp-print">' . esc_html__( 'Drucken', 'auhof-schulseiten' ) . '</button>';
+	$pdf     = $admin ? '' : auhof_raumplan_pdf_url();
+	if ( $pdf ) {
+		$drucken .= '<a class="rp-pdf" href="' . esc_url( $pdf ) . '" type="application/pdf">' . esc_html__( 'PDF', 'auhof-schulseiten' ) . '<span class="screen-reader-text"> ' . esc_html__( '– ganzer Raumplan, A4 quer', 'auhof-schulseiten' ) . '</span></a>';
+	}
 	return '<div id="raumplan">'
 		. '<div class="rp-bar">'
 		. '<span class="rp-year"></span>'

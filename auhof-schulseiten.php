@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Auhof Schulseiten
  * Description:       Lehrkräfte, Verwaltung, Organigramm, Raumplan, Terminvorschau und Diashow – im Backend pflegen, die Seiten werden automatisch erzeugt.
- * Version:           1.4.12
+ * Version:           1.5.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Europagymnasium Auhof
@@ -27,12 +27,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUHOF_SCHULSEITEN_VERSION', '1.4.12' );
+define( 'AUHOF_SCHULSEITEN_VERSION', '1.5.0' );
 define( 'AUHOF_SCHULSEITEN_PFAD', plugin_dir_path( __FILE__ ) );
 define( 'AUHOF_SCHULSEITEN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/personen.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/raumplan.php';
+require_once AUHOF_SCHULSEITEN_PFAD . 'includes/raumplan-pdf.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/termine.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/diashow.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/bilder.php';
