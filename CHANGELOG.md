@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.3.1 – 21.11.2026
+- **Neues Feld „Funktion“** (`_auhof_funktion`) getrennt von „Fächer“ (`_auhof_zusatz`); auch als CSV-Spalte (alte Spalte „Fächer / Funktion“ wird weiter als Fächer erkannt).
+- **Ansichten** `[auhof_personen ansicht="lehrkraft|kontakt"]`: Lehrkräfte alphabetisch mit Fächern, ohne Foto und Telefon; Kontakt mit Funktion, Foto und Telefon.
+- **Doppelte Personen zusammengeführt:** Gleiche E-Mail in „Lehrkräfte“ und einer Verwaltungsgruppe → der Verwaltungseintrag behält Foto, Telefon und Funktion, übernimmt Fächer, Gruppen, Funktionen und Klasse; der Lehrkraft-Eintrag kommt in den Papierkorb. Danach wandert bei Verwaltungseinträgen der alte Text von „Fächer“ nach „Funktion“.
+- **Suche in der Personenliste:** „Alle Gruppen“ filterte versehentlich alles weg; die Suche findet jetzt auch E-Mail, Fächer, Funktion und Klasse. Spalte „Fächer / Funktion“ zeigt beide Felder.
+
 ## 1.3.0 – 21.11.2026
 - **Organigramm** `[auhof_organigramm]` (`includes/organigramm.php`, `organigramm-admin.php`, `assets/organigramm.css/js`):
   - Gepflegt wird bei jeder Person: Feld „Klassenvorstand (Klasse)“ und Kasten „Funktionen“ (Taxonomie `auhof_funktion`, hierarchisch).

@@ -18,7 +18,8 @@ function auhof_personen_felder() {
 		'vorname'    => __( 'Vorname', 'auhof-schulseiten' ),
 		'nachname'   => __( 'Nachname', 'auhof-schulseiten' ),
 		'titel_nach' => __( 'Titel hinten', 'auhof-schulseiten' ),
-		'zusatz'     => __( 'Fächer / Funktion', 'auhof-schulseiten' ),
+		'zusatz'     => __( 'Fächer', 'auhof-schulseiten' ),
+		'funktion'   => __( 'Funktion (z. B. Schulleiterin)', 'auhof-schulseiten' ),
 		'email'      => __( 'E-Mail', 'auhof-schulseiten' ),
 		'telefon'    => __( 'Telefon', 'auhof-schulseiten' ),
 		'klasse'     => __( 'Klassenvorstand (Klasse)', 'auhof-schulseiten' ),
@@ -163,12 +164,13 @@ function auhof_personen_registrieren() {
 }
 
 /**
- * Personen einer Gruppe, sortiert nach Reihenfolge, dann Nachname und Vorname.
+ * Personen einer Gruppe, sortiert nach Reihenfolge (außer $alphabetisch), dann Nachname und Vorname.
  *
- * @param string $gruppe Slug der Gruppe.
+ * @param string $gruppe      Slug der Gruppe.
+ * @param bool   $alphabetisch Reihenfolge-Feld nicht beachten (Lehrkräfte-Liste).
  * @return array<int,array<string,mixed>>
  */
-function auhof_personen_laden( $gruppe ) {
+function auhof_personen_laden( $gruppe, $alphabetisch = false ) {
 	$abfrage = new WP_Query(
 		array(
 			'post_type'              => 'auhof_person',
@@ -203,8 +205,8 @@ function auhof_personen_laden( $gruppe ) {
 
 	usort(
 		$personen,
-		function ( $a, $b ) {
-			if ( $a['reihenfolge'] !== $b['reihenfolge'] ) {
+		function ( $a, $b ) use ( $alphabetisch ) {
+			if ( ! $alphabetisch && $a['reihenfolge'] !== $b['reihenfolge'] ) {
 				return $a['reihenfolge'] < $b['reihenfolge'] ? -1 : 1;
 			}
 			return strcmp( $a['sortierung'], $b['sortierung'] );
@@ -265,11 +267,17 @@ function auhof_personen_tel_link( $nummer ) {
 /**
  * HTML einer Person.
  *
- * @param array<string,mixed> $p Person.
+ * Ansicht „lehrkraft“: Fächer und E-Mail (ohne Foto und Telefon); Ansicht „kontakt“: Funktion (sonst Fächer),
+ * Telefon, E-Mail und Foto.
+ *
+ * @param array<string,mixed> $p       Person.
+ * @param string              $ansicht „lehrkraft“ oder „kontakt“.
  * @return string
  */
-function auhof_personen_karte( $p ) {
-	$name = trim( $p['vorname'] . ' ' . $p['nachname'] );
+function auhof_personen_karte( $p, $ansicht = 'kontakt' ) {
+	$lehrkraft = 'lehrkraft' === $ansicht;
+	$zusatz    = $lehrkraft ? $p['zusatz'] : ( '' !== $p['funktion'] ? $p['funktion'] : $p['zusatz'] );
+	$name      = trim( $p['vorname'] . ' ' . $p['nachname'] );
 
 	$zeile = '';
 	if ( '' !== $p['titel_vor'] ) {
@@ -281,17 +289,17 @@ function auhof_personen_karte( $p ) {
 	}
 
 	$text = '<div>' . $zeile . '</div>';
-	if ( '' !== $p['zusatz'] ) {
-		$text .= '<div class="auhof-person__zusatz">' . esc_html( $p['zusatz'] ) . '</div>';
+	if ( '' !== $zusatz ) {
+		$text .= '<div class="auhof-person__zusatz">' . esc_html( $zusatz ) . '</div>';
 	}
-	if ( '' !== $p['telefon'] ) {
+	if ( ! $lehrkraft && '' !== $p['telefon'] ) {
 		$text .= '<div>' . esc_html__( 'Tel.', 'auhof-schulseiten' ) . ' <a href="' . esc_url( auhof_personen_tel_link( $p['telefon'] ), array( 'tel' ) ) . '">' . esc_html( $p['telefon'] ) . '</a></div>';
 	}
 	if ( '' !== $p['email'] ) {
 		$text .= '<div><a href="' . esc_url( 'mailto:' . $p['email'], array( 'mailto' ) ) . '">' . esc_html( $p['email'] ) . '</a></div>';
 	}
 
-	if ( ! $p['foto'] ) {
+	if ( $lehrkraft || ! $p['foto'] ) {
 		return '<li class="auhof-person">' . $text . '</li>';
 	}
 	$bild = wp_get_attachment_image(
@@ -312,19 +320,20 @@ function auhof_personen_karte( $p ) {
  * Liste von Personen (Raster).
  *
  * @param array<int,array<string,mixed>> $personen Personen.
+ * @param string                         $ansicht  „lehrkraft“ oder „kontakt“.
  * @return string
  */
-function auhof_personen_liste( $personen ) {
+function auhof_personen_liste( $personen, $ansicht = 'kontakt' ) {
 	$mit_foto = false;
 	foreach ( $personen as $p ) {
-		if ( $p['foto'] ) {
+		if ( $p['foto'] && 'lehrkraft' !== $ansicht ) {
 			$mit_foto = true;
 			break;
 		}
 	}
 	$html = '<ul class="auhof-personen' . ( $mit_foto ? ' auhof-personen--foto' : '' ) . '" role="list">';
 	foreach ( $personen as $p ) {
-		$html .= auhof_personen_karte( $p );
+		$html .= auhof_personen_karte( $p, $ansicht );
 	}
 	return $html . '</ul>';
 }
@@ -332,7 +341,8 @@ function auhof_personen_liste( $personen ) {
 add_shortcode( 'auhof_personen', 'auhof_personen_shortcode' );
 
 /**
- * Shortcode [auhof_personen gruppe="slug" az="ja"].
+ * Shortcode [auhof_personen gruppe="slug" az="ja" ansicht="lehrkraft|kontakt"].
+ * Ohne „ansicht“: Gruppe „lehrkraefte“ → lehrkraft (alphabetisch, Fächer, ohne Foto/Telefon), sonst kontakt.
  *
  * @param array<string,string>|string $atts Attribute.
  * @return string
@@ -340,21 +350,23 @@ add_shortcode( 'auhof_personen', 'auhof_personen_shortcode' );
 function auhof_personen_shortcode( $atts ) {
 	$atts     = shortcode_atts(
 		array(
-			'gruppe' => '',
-			'az'     => 'nein',
+			'gruppe'  => '',
+			'az'      => 'nein',
+			'ansicht' => '',
 		),
 		$atts,
 		'auhof_personen'
 	);
 	$gruppe   = sanitize_title( $atts['gruppe'] );
-	$personen = '' !== $gruppe ? auhof_personen_laden( $gruppe ) : array();
+	$ansicht  = in_array( $atts['ansicht'], array( 'lehrkraft', 'kontakt' ), true ) ? $atts['ansicht'] : ( 'lehrkraefte' === $gruppe ? 'lehrkraft' : 'kontakt' );
+	$personen = '' !== $gruppe ? auhof_personen_laden( $gruppe, 'lehrkraft' === $ansicht ) : array();
 	if ( ! $personen ) {
 		return '';
 	}
 	wp_enqueue_style( 'auhof-personen' );
 
 	if ( ! in_array( strtolower( $atts['az'] ), array( 'ja', '1', 'true' ), true ) ) {
-		return auhof_personen_liste( $personen );
+		return auhof_personen_liste( $personen, $ansicht );
 	}
 
 	$nach_buchstabe = array();
@@ -370,7 +382,7 @@ function auhof_personen_shortcode( $atts ) {
 		$leiste    .= '<a href="#' . esc_attr( $anker ) . '">' . esc_html( $buchstabe ) . '</a>';
 		$abschnitt .= '<div class="auhof-az__kopf"><h3 id="' . esc_attr( $anker ) . '">' . esc_html( $buchstabe ) . '</h3>'
 			. '<a href="#lk-top">' . esc_html__( '↑ nach oben', 'auhof-schulseiten' ) . '</a></div>'
-			. auhof_personen_liste( $liste );
+			. auhof_personen_liste( $liste, $ansicht );
 	}
 
 	return '<nav class="auhof-az" id="lk-top" aria-label="' . esc_attr__( 'Nach Anfangsbuchstabe', 'auhof-schulseiten' ) . '">' . $leiste . '</nav>' . $abschnitt;
@@ -387,4 +399,82 @@ function auhof_personen_assets() {
 	if ( is_singular() && $post && has_shortcode( $post->post_content, 'auhof_personen' ) ) {
 		wp_enqueue_style( 'auhof-personen' );
 	}
+}
+
+add_action( 'init', 'auhof_personen_daten_aktualisieren', 20 );
+
+/**
+ * Einmalige Datenaktualisierung (Datenstand 2, Plugin 1.3.1):
+ * 1. Personen mit gleicher E-Mail, einmal in „Lehrkräfte“ und einmal in einer anderen Gruppe, werden zu einem
+ *    Eintrag zusammengeführt (der Verwaltungseintrag bleibt – Foto, Telefon, Reihenfolge; Fächer, Titel, Klasse,
+ *    Gruppen und Funktionen der Lehrkraft werden übernommen; der Lehrkraft-Eintrag kommt in den Papierkorb).
+ * 2. Bei Personen außerhalb von „Lehrkräfte“ wandert der bisherige Text aus „Fächer“ (z. B. „Schulleiterin“)
+ *    in das neue Feld „Funktion“.
+ */
+function auhof_personen_daten_aktualisieren() {
+	if ( (int) get_option( 'auhof_personen_datenstand', 1 ) >= 2 ) {
+		return;
+	}
+	update_option( 'auhof_personen_datenstand', 2, false );
+	$lehr = get_term_by( 'slug', 'lehrkraefte', 'auhof_gruppe' );
+	if ( ! $lehr ) {
+		return;
+	}
+	$alle      = get_posts(
+		array(
+			'post_type'   => 'auhof_person',
+			'post_status' => array( 'publish', 'draft' ),
+			'numberposts' => -1,
+		)
+	);
+	$ist_lehr  = function ( $id ) use ( $lehr ) {
+		return has_term( (int) $lehr->term_id, 'auhof_gruppe', $id );
+	};
+	$nach_mail = array();
+	foreach ( $alle as $p ) {
+		$mail = strtolower( trim( (string) get_post_meta( $p->ID, '_auhof_email', true ) ) );
+		if ( '' !== $mail ) {
+			$nach_mail[ $mail ][] = $p->ID;
+		}
+	}
+	foreach ( $nach_mail as $ids ) {
+		if ( 2 !== count( $ids ) || $ist_lehr( $ids[0] ) === $ist_lehr( $ids[1] ) ) {
+			continue;
+		}
+		$lehrkraft = $ist_lehr( $ids[0] ) ? $ids[0] : $ids[1];
+		$bleibt    = $lehrkraft === $ids[0] ? $ids[1] : $ids[0];
+		// Funktionstext des Verwaltungseintrags sichern, bevor „Fächer“ übernommen wird.
+		if ( '' === (string) get_post_meta( $bleibt, '_auhof_funktion', true ) ) {
+			update_post_meta( $bleibt, '_auhof_funktion', (string) get_post_meta( $bleibt, '_auhof_zusatz', true ) );
+		}
+		foreach ( array( 'zusatz', 'titel_vor', 'titel_nach', 'klasse' ) as $f ) {
+			$wert = (string) get_post_meta( $lehrkraft, '_auhof_' . $f, true );
+			if ( 'zusatz' === $f || ( '' !== $wert && '' === (string) get_post_meta( $bleibt, '_auhof_' . $f, true ) ) ) {
+				update_post_meta( $bleibt, '_auhof_' . $f, $wert );
+			}
+		}
+		foreach ( array( 'auhof_gruppe', 'auhof_funktion' ) as $tax ) {
+			$ids_l = wp_get_object_terms( $lehrkraft, $tax, array( 'fields' => 'ids' ) );
+			if ( is_array( $ids_l ) && $ids_l ) {
+				wp_set_object_terms( $bleibt, array_map( 'intval', $ids_l ), $tax, true );
+			}
+		}
+		wp_trash_post( $lehrkraft );
+	}
+	// Funktionstexte außerhalb der Lehrkräfte ins neue Feld.
+	foreach ( get_posts(
+		array(
+			'post_type'   => 'auhof_person',
+			'post_status' => array( 'publish', 'draft' ),
+			'numberposts' => -1,
+			'fields'      => 'ids',
+		)
+	) as $id ) {
+		$zusatz = (string) get_post_meta( $id, '_auhof_zusatz', true );
+		if ( ! $ist_lehr( $id ) && '' !== $zusatz && '' === (string) get_post_meta( $id, '_auhof_funktion', true ) ) {
+			update_post_meta( $id, '_auhof_funktion', $zusatz );
+			update_post_meta( $id, '_auhof_zusatz', '' );
+		}
+	}
+	delete_transient( 'auhof_termine_vorschau' );
 }

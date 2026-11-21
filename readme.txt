@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,11 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.3.1 =
+* Neues Feld „Funktion“ (Kontakt) getrennt von „Fächer“ (Lehrkräfte); Lehrkräfte-Liste alphabetisch ohne Foto/Telefon.
+* Doppelte Personen (gleiche E-Mail, Lehrkraft + Verwaltung) werden beim Update zusammengeführt.
+* Suche in der Personenliste repariert („Alle Gruppen“) und auf E-Mail, Fächer, Funktion, Klasse erweitert.
+
 = 1.3.0 =
 * Organigramm aus Funktionen und Klassenvorstand der Personen.
 * CSV-Export und -Import der Personen mit Vorschau.

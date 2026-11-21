@@ -153,7 +153,7 @@ function auhof_personen_spalte( $spalte, $post_id ) {
 	if ( 'auhof_foto' === $spalte ) {
 		echo get_the_post_thumbnail( $post_id, array( 40, 50 ), array( 'alt' => '' ) );
 	} elseif ( 'auhof_zusatz' === $spalte ) {
-		echo esc_html( get_post_meta( $post_id, '_auhof_zusatz', true ) );
+		echo esc_html( implode( ' · ', array_filter( array( get_post_meta( $post_id, '_auhof_funktion', true ), get_post_meta( $post_id, '_auhof_zusatz', true ) ) ) ) );
 	} elseif ( 'auhof_email' === $spalte ) {
 		echo esc_html( get_post_meta( $post_id, '_auhof_email', true ) );
 	} elseif ( 'auhof_klasse' === $spalte ) {
@@ -225,7 +225,7 @@ function auhof_personen_admin_suche( $suche, $abfrage ) {
 	}
 	$like  = '%' . $wpdb->esc_like( $begriff ) . '%';
 	$extra = $wpdb->prepare(
-		"{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '_auhof_email', '_auhof_zusatz', '_auhof_klasse', '_auhof_nachname', '_auhof_vorname' ) AND meta_value LIKE %s )",
+		"{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '_auhof_email', '_auhof_zusatz', '_auhof_funktion', '_auhof_klasse', '_auhof_nachname', '_auhof_vorname' ) AND meta_value LIKE %s )",
 		$like
 	);
 	// Die Suche von WordPress beginnt mit „ AND (“ – die zusätzliche Bedingung wird mit OR angehängt.
