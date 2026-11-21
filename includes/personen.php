@@ -401,7 +401,9 @@ function auhof_personen_assets() {
 	}
 }
 
-add_action( 'init', 'auhof_personen_daten_aktualisieren', 20 );
+// Einmalige Datenumstellungen nur im Backend und nur durch Personen mit dem Recht für die Schulseiten auslösen,
+// nicht durch beliebige Besucher (admin_init läuft auch bei admin-ajax.php/admin-post.php ohne Anmeldung).
+add_action( 'admin_init', 'auhof_personen_daten_aktualisieren', 20 );
 
 /**
  * Einmalige Datenaktualisierung (Datenstand 2, Plugin 1.3.1):
@@ -412,7 +414,7 @@ add_action( 'init', 'auhof_personen_daten_aktualisieren', 20 );
  *    in das neue Feld „Funktion“.
  */
 function auhof_personen_daten_aktualisieren() {
-	if ( (int) get_option( 'auhof_personen_datenstand', 1 ) >= 2 ) {
+	if ( ! current_user_can( auhof_schulseiten_recht() ) || (int) get_option( 'auhof_personen_datenstand', 1 ) >= 2 ) {
 		return;
 	}
 	update_option( 'auhof_personen_datenstand', 2, false );

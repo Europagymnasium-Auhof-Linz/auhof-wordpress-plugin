@@ -290,7 +290,7 @@ function auhof_funktion_reihenfolge_speichern( $post_id, $werte ) {
 	}
 }
 
-add_action( 'init', 'auhof_organigramm_reihenfolge_uebernehmen', 21 );
+add_action( 'admin_init', 'auhof_organigramm_reihenfolge_uebernehmen', 21 ); // wie Datenstand 2: nur Backend, nur berechtigte Personen
 
 /**
  * Einmalige Datenaktualisierung (Datenstand 3, Plugin 1.4.0): Bis 1.3.1 ordnete das Organigramm nach dem Feld
@@ -299,7 +299,7 @@ add_action( 'init', 'auhof_organigramm_reihenfolge_uebernehmen', 21 );
  */
 function auhof_organigramm_reihenfolge_uebernehmen() {
 	$stand = (int) get_option( 'auhof_personen_datenstand', 1 );
-	if ( $stand >= 3 || $stand < 2 ) {
+	if ( ! current_user_can( auhof_schulseiten_recht() ) || $stand >= 3 || $stand < 2 ) {
 		return;
 	}
 	update_option( 'auhof_personen_datenstand', 3, false );

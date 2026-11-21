@@ -1,5 +1,13 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.4 – 21.11.2026
+- **Sicherheit, Datenumstellungen:**
+  - `auhof_personen_daten_aktualisieren()` (Datenstand 2) und `auhof_organigramm_reihenfolge_uebernehmen()` (Datenstand 3) liefen bisher auf `init`, also auch beim ersten Seitenaufruf eines beliebigen Besuchers nach dem Update.
+  - Sie hängen jetzt an `admin_init` und prüfen `auhof_schulseiten_recht()`. `admin_init` läuft auch bei `admin-ajax.php`/`admin-post.php` ohne Anmeldung, daher die zusätzliche Rechteprüfung.
+  - Ein zweiter Durchlauf ändert ohnehin nichts.
+- **Hinweis für den Server:** `readme.txt` der Plugins war öffentlich lesbar und verriet die Version. Gesperrt wird sie über eine `.htaccess`-Regel des Servers (readme/changelog/license, auch in Plugin-Ordnern), nicht im Plugin.
+- Geprüft: PHP-Syntax, PHPCS 0 Fehler, PHP 7.4+ kompatibel, Semgrep 0 Befunde.
+
 ## 1.4.3 – 21.11.2026
 - **Raumplan drucken, leere Seite am Ende** (`assets/raumplan.css`, Druckregeln am Ende):
   - Ursache: Das Theme gibt dem Inhaltsbereich 80 px Abstand oben und unten und der Seite eine Mindesthöhe von einer Seitenhöhe. Mit Plan, Überschrift und diesen Abständen war der Inhalt etwas höher als eine Seite, besonders im Querformat und am Handy.
