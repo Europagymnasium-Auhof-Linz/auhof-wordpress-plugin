@@ -1,5 +1,16 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.9 – 21.11.2026
+- **Raumplan drucken am Handy, weiterhin 2 Seiten** (`assets/raumplan.js`, `assets/raumplan.css`):
+  - Ursache (aus dem Screenshot von Brave/Android): Android übernimmt die Vorgabe „A4 quer“ für den Seitenaufbau, druckt aber auf hochkant liegendes Papier und verkleinert die Querseite darauf; deshalb füllte sie nur die obere Hälfte. Die Abfrage „Hochformat“ richtet sich nach dem Papier, also wurde gedreht, und der hohe gedrehte Plan passte nicht in die niedrige Querseite.
+  - Die Annahme in 1.4.7/1.4.8, Android ignoriere `@page`, war falsch. Die Simulation hatte `@page` entfernt und den Fehler deshalb nicht gezeigt.
+  - Lösung: Auf Handys und in Safari setzt `raumplan.js` `@page { size: auto; margin: 8mm }`. Damit folgt die Seite dem Papier: hochkant wird gedreht, quer gewählt bleibt ungedreht.
+  - Die gedrehte Fläche ist jetzt 175 × 245 mm statt 230 mm, der Plan also größer.
+- Geprüft:
+  - Android-Kennung **mit** aktivem `@page`: Das Fehlerbild von 1.4.8 (2 Querseiten, Schnitt bei 5A/1E/FES) ist nachgestellt. Mit 1.4.9 ergeben A4 und Letter hoch mit Rand 8–20 mm sowie quer gewählt jeweils 1 Seite.
+  - iPhone und Mac Safari (ohne `@page`) hoch und quer: je 1 Seite.
+  - Windows Chrome unverändert 1 Seite quer.
+
 ## 1.4.8 – 21.11.2026
 - **Raumplan drucken am Handy, zweite Seite** (`assets/raumplan.css`):
   - Ursache: Die gedrehte Fläche war 265 mm hoch und auf A4 berechnet. Android druckt häufig auf Letter (279 mm). Mit Rand blieben dort rund 263 mm, der untere bzw. rechte Teil des Plans brach auf eine zweite Seite um.

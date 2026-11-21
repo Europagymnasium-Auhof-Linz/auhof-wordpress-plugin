@@ -73,12 +73,12 @@
 #raumplan .rp-druck-stock .rp-room:not(.rp-hl) { fill:transparent; }
 }
 /* Handy und Safari (ohne @page-Format, Klasse von raumplan.js) bei Hochformat: Inhalt um 90° drehen, damit der
-   Plan quer auf dem Blatt liegt. Fläche 175 × 230 mm: passt auf A4 und Letter (Android-Standard) hoch mit bis zu
-   17 mm Rand seitlich und 24 mm oben/unten – 1.4.7 hatte 265 mm und brach auf Letter auf 2 Seiten um. Nur dort ist
-   die Abfrage (orientation) verlässlich, weil kein @page-Format das Papier verändert. */
+   Plan quer auf dem Blatt liegt. Fläche 175 × 245 mm: passt auf A4 und Letter hoch mit bis zu 17 mm Rand.
+   raumplan.js setzt auf diesen Geräten @page { size: auto } – sonst bauen Android-Browser die Seite quer auf und
+   verkleinern sie aufs hochkant liegende Papier, und der gedrehte Plan bricht auf 2 Seiten um (1.4.7/1.4.8). */
 @media print and (orientation: portrait) {
-#raumplan .rp-druck--drehbar { position:relative; width:175mm; height:230mm; overflow:hidden; }
-#raumplan .rp-druck--drehbar .rp-druck-inhalt { position:absolute; top:0; left:175mm; width:230mm; height:175mm; transform-origin:0 0; transform:rotate(90deg); }
+#raumplan .rp-druck--drehbar { position:relative; width:175mm; height:245mm; overflow:hidden; }
+#raumplan .rp-druck--drehbar .rp-druck-inhalt { position:absolute; top:0; left:175mm; width:245mm; height:175mm; transform-origin:0 0; transform:rotate(90deg); }
 }
 /* Schmaleres Papier (Hochformat, Safari ohne @page-Format, größerer Rand): Stockwerke schrumpfen gemeinsam über
    flex-shrink bzw. Prozentbreiten. Keine Abfrage (orientation: portrait) – Chrome wertet sie gegen das

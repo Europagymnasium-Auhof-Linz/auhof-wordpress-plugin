@@ -130,7 +130,18 @@
 	function druckBauen() {
 		var a = druckAnordnung();
 		while (druck.firstChild) druck.removeChild(druck.firstChild);
-		druck.className = 'rp-druck' + (ohneSeitenformat() ? ' rp-druck--drehbar' : '');
+		var drehbar = ohneSeitenformat();
+		druck.className = 'rp-druck' + (drehbar ? ' rp-druck--drehbar' : '');
+		// Android-Browser bauen die Seite nach @page quer auf, drucken aber auf hochkant liegendes Papier und
+		// verkleinern die Querseite darauf. Daher auf diesen Geräten Seitenformat = Papier („auto“); dann passen
+		// Seite, Papier und die Abfrage (orientation) zusammen. Diese Regel steht zuletzt im Kopf und gewinnt.
+		var seite = document.getElementById('rp-druck-seite');
+		if (drehbar && !seite) {
+			seite = document.createElement('style');
+			seite.id = 'rp-druck-seite';
+			seite.textContent = '@page { size: auto; margin: 8mm; }';
+			document.head.appendChild(seite);
+		}
 		var inhalt = document.createElement('div');
 		inhalt.className = 'rp-druck-inhalt';
 		druck.appendChild(inhalt);

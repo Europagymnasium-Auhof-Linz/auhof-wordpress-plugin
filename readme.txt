@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.8
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.4.9 =
+* Raumplan drucken am Handy: wirklich eine Seite (Seitenformat folgt dem Papier), Plan größer.
+
 = 1.4.8 =
 * Raumplan drucken am Handy: gedrehter Plan passt auch auf Letter-Papier (Android-Standard) auf eine Seite.
 
