@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.11
+Stable tag: 1.4.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,8 +45,8 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
-= 1.4.11 =
-* Raumplan drucken in Safari: Grafik in Rahmen mit festem Seitenverhältnis.
+= 1.4.12 =
+* Raumplan drucken: gedrehte Grafik nur auf Android; Safari wieder normale Druckseite (eine Seite).
 
 = 1.4.10 =
 * Raumplan drucken am Handy und in Safari: fertig gedrehte Grafik, hochkant, Plan quer darauf.

@@ -75,17 +75,16 @@
 /* Handy und Safari (Klasse .rp-druck--drehbar von raumplan.js): statt der Druckseite die bereits gedrehte Grafik
    .rp-druck-bild drucken – hochkant, Plan quer darauf, auf Seitenbreite skaliert. Keine Abfrage (orientation) und
    keine CSS-Drehung: Safari baut die Druckseite nach der Fensterbreite auf und wertet beides nicht verlässlich aus. */
-#raumplan .rp-druck-bildrahmen { display:none; }
+#raumplan .rp-druck-bild { display:none; }
 @media print {
 #raumplan .rp-druck--drehbar .rp-druck-inhalt { display:none !important; }
-#raumplan .rp-druck--drehbar .rp-druck-bildrahmen { display:block !important; position:relative; width:100%; height:0; overflow:hidden; break-inside:avoid; page-break-inside:avoid; }
-#raumplan .rp-druck--drehbar svg.rp-druck-bild { display:block !important; position:absolute; top:0; left:0; width:100% !important; height:100% !important; min-width:0 !important; max-width:100% !important; margin:0 !important; }
+#raumplan .rp-druck--drehbar svg.rp-druck-bild { display:block !important; width:100% !important; height:auto !important; min-width:0 !important; max-width:100% !important; margin:0 !important; }
 }
-/* Safari/WebKit: Rahmen fest an die Seite geheftet (position:fixed = Seitenfläche, wird nicht umbrochen); die Grafik
-   passt sich in Breite UND Höhe ein. Der Fluss ist nur 1 px hoch, damit genau eine Seite entsteht. */
-@media print {
-#raumplan .rp-druck--fest { height:1px !important; overflow:visible !important; }
-#raumplan .rp-druck--fest .rp-druck-bildrahmen { position:fixed !important; top:0; left:0; right:0; bottom:0; width:auto !important; height:auto !important; padding:0 !important; overflow:hidden; }
+/* Android, im Druckdialog selbst Querformat gewählt: normale Druckseite statt der hochkanten Grafik (sonst 2 Seiten).
+   Auf Android folgt (orientation) dem Papier, weil raumplan.js dort @page { size: auto } setzt. */
+@media print and (orientation: landscape) {
+#raumplan .rp-druck--drehbar .rp-druck-inhalt { display:block !important; }
+#raumplan .rp-druck--drehbar svg.rp-druck-bild { display:none !important; }
 }
 }
 /* Schmaleres Papier (Hochformat, Safari ohne @page-Format, größerer Rand): Stockwerke schrumpfen gemeinsam über

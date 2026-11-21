@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.12 – 21.11.2026
+- **Raumplan drucken in Safari zurückgestellt** (Basis 1.4.10, `assets/raumplan.js`):
+  - 1.4.10 (gedrehte Grafik im Fluss): in Safari 2 Seiten, Grafik nach unten verschoben. 1.4.11 (Grafik `position:fixed`): in Safari leere Seite. Beides ließ sich in Playwright-WebKit nicht nachstellen; Safaris Druck verhält sich anders als der Browserkern.
+  - Jetzt: gedrehte Grafik nur auf Android (dort vom Benutzer bestätigt). Safari/WebKit (Mac, iOS) bekommt die normale Druckseite mit `@page { size: auto }` – der in 1.4.9 per Screenshot bestätigte Stand: eine Seite, Plan aufrecht, im Hochformat verkleinert. Für volle Größe im Druckdialog Querformat wählen.
+  - 1.4.11 nicht verwenden.
+
 ## 1.4.11 – 21.11.2026
 - **Raumplan drucken in Safari, 2 Seiten** (Screenshot: Grafik begann weit unten auf Seite 1):
   - Messung in Playwright-WebKit (Testseite und Hoster-Kopie): Layout korrekt, Grafik oben, Kasten richtig groß. Der Fehler entsteht erst in Safaris Seitenumbruch (nicht nachstellbar ohne Druckdialog).

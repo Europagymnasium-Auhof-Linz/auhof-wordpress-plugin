@@ -130,17 +130,17 @@
 	function druckBauen() {
 		var a = druckAnordnung();
 		while (druck.firstChild) druck.removeChild(druck.firstChild);
-		var drehbar = ohneSeitenformat();
-		// Safari/WebKit (Mac, iPhone, iPad – dort auch Chrome und Firefox): Grafik fest an die Druckseite heften
-		// (.rp-druck--fest), weil Safaris Seitenumbruch sie sonst verschiebt und auf zwei Seiten teilt.
-		var ua = navigator.userAgent || '';
-		var webkit = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) || (/Safari/.test(ua) && !/Chrome|Chromium|Android|Edg|OPR|Firefox/.test(ua));
-		druck.className = 'rp-druck' + (drehbar ? ' rp-druck--drehbar' : '') + (drehbar && webkit ? ' rp-druck--fest' : '');
+		// Gedrehte Grafik nur auf Android (dort bestätigt). Safari/WebKit (Mac, iOS) verschiebt sie beim Seitenumbruch
+		// bzw. druckt sie gar nicht (1.4.10/1.4.11); dort bleibt die normale Druckseite, die im Hochformat
+		// verkleinert auf eine Seite passt (bestätigter Stand 1.4.9) – Querformat im Druckdialog wählen.
+		var ohneFormat = ohneSeitenformat();
+		var drehbar = ohneFormat && /Android/i.test(navigator.userAgent || '');
+		druck.className = 'rp-druck' + (drehbar ? ' rp-druck--drehbar' : '');
 		// Android-Browser bauen die Seite nach @page quer auf, drucken aber auf hochkant liegendes Papier und
 		// verkleinern die Querseite darauf. Daher auf diesen Geräten Seitenformat = Papier („auto“); dann passen
 		// Seite, Papier und die Abfrage (orientation) zusammen. Diese Regel steht zuletzt im Kopf und gewinnt.
 		var seite = document.getElementById('rp-druck-seite');
-		if (drehbar && !seite) {
+		if (ohneFormat && !seite) {
 			seite = document.createElement('style');
 			seite.id = 'rp-druck-seite';
 			seite.textContent = '@page { size: auto; margin: 8mm; }';
@@ -197,7 +197,7 @@
 	function druckBild(a) {
 		var B = DRUCK.breite, H = DRUCK.hoehe, g = DRUCK.abstand, T = DRUCK.titel;
 		var breite = Math.max(H, B / BILD_VERHAELTNIS);
-		var bild = el('svg', { 'class': 'rp-druck-bild', viewBox: '0 0 ' + breite.toFixed(2) + ' ' + B, width: breite.toFixed(2), height: B, preserveAspectRatio: 'xMidYMin meet', 'aria-hidden': 'true', focusable: 'false' });
+		var bild = el('svg', { 'class': 'rp-druck-bild', viewBox: '0 0 ' + breite.toFixed(2) + ' ' + B, 'aria-hidden': 'true', focusable: 'false' });
 		var defs = el('defs', {}, bild);
 		// Querformat-Inhalt (B × H) drehen: rechts oben beginnend, im Uhrzeigersinn, waagrecht mittig.
 		var quer = el('g', { transform: 'translate(' + ((breite - H) / 2 + H).toFixed(2) + ' 0) rotate(90)' }, bild);
@@ -233,13 +233,7 @@
 			});
 			while (c.firstChild) gStock.appendChild(c.firstChild);
 		});
-		// Rahmen mit fest berechnetem Seitenverhältnis (padding-top in % der Breite): Safari/WebKit berechnet die
-		// Höhe eines SVG mit height:auto nicht verlässlich; die Grafik füllt den Rahmen, Inhalt oben ausgerichtet.
-		var rahmen = document.createElement('div');
-		rahmen.className = 'rp-druck-bildrahmen';
-		rahmen.style.paddingTop = (B / breite * 100).toFixed(3) + '%';
-		rahmen.appendChild(bild);
-		return rahmen;
+		return bild;
 	}
 	window.addEventListener('beforeprint', druckBauen);
 
