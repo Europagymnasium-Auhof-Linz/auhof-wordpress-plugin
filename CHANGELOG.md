@@ -1,5 +1,10 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.6.1 – 21.11.2026
+- Menüpunkt und Seitentitel „Aktuelle Infos“ heißen jetzt **„Pinnwand“**; Standard-Überschrift auf der Startseite ebenfalls „Pinnwand“ (eine selbst eingetragene Überschrift bleibt). Interne Namen (`auhof_infos`, `[auhof_infos]`) unverändert.
+- Hinweis zum Abstand: Der Shortcode gehört **in** die graue Gruppe vor die Spalten „Aktuelles“/„Termine“. Als eigener Block zwischen zwei Gruppen addieren sich deren Innenabstände und der Blockabstand (auf der Hoster-Kopie gemessen rund 100 px darüber und 80 px darunter), und der Block steht außerhalb der Inhaltsbreite.
+- Geprüft auf der Testseite: Menüpunkt, Seitentitel und Standard-Überschrift „Pinnwand“; `tests/infos-test.php` 19/19 (ohne Formular-Datei).
+
 ## 1.6.0 – 21.11.2026
 - **Neu: „Aktuelle Infos“** (`includes/infos.php`, `includes/infos-admin.php`, `assets/infos.css`, `assets/infos-admin.js`):
   - Backend-Menü „Aktuelle Infos“: Einträge mit Überschrift, kurzem Text und optionalem Link; Häkchen „Anzeigen“; „+ Info hinzufügen“, „−“ entfernen (mit Rückfrage), ↑/↓ verschieben; Überschrift des Bereichs einstellbar. Höchstens 12 Einträge. Rechte wie die übrigen Schulseiten (Redakteur:innen, Administrator:innen).

@@ -1,6 +1,6 @@
 <?php
 /**
- * Aktuelle Infos im Backend: Einträge hinzufügen (+), entfernen (−), verschieben (↑/↓), anzeigen ja/nein.
+ * Pinnwand (Aktuelle Infos) im Backend: Einträge hinzufügen (+), entfernen (−), verschieben (↑/↓), anzeigen ja/nein.
  *
  * @package AuhofSchulseiten
  */
@@ -10,10 +10,10 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'admin_menu', 'auhof_infos_menue' );
 
 /**
- * Menüpunkt „Aktuelle Infos“ (für Redakteur:innen und Administrator:innen).
+ * Menüpunkt „Pinnwand“ (für Redakteur:innen und Administrator:innen).
  */
 function auhof_infos_menue() {
-	add_menu_page( __( 'Aktuelle Infos', 'auhof-schulseiten' ), __( 'Aktuelle Infos', 'auhof-schulseiten' ), auhof_schulseiten_recht(), 'auhof-infos', 'auhof_infos_seite', 'dashicons-megaphone', 21 );
+	add_menu_page( __( 'Pinnwand', 'auhof-schulseiten' ), __( 'Pinnwand', 'auhof-schulseiten' ), auhof_schulseiten_recht(), 'auhof-infos', 'auhof_infos_seite', 'dashicons-megaphone', 21 );
 }
 
 add_action( 'admin_init', 'auhof_infos_einstellung_registrieren' );
@@ -107,7 +107,7 @@ function auhof_infos_admin_eintrag( $nr, $info ) {
 }
 
 /**
- * Seite „Aktuelle Infos“.
+ * Seite „Pinnwand“.
  */
 function auhof_infos_seite() {
 	if ( ! current_user_can( auhof_schulseiten_recht() ) ) {
@@ -116,7 +116,7 @@ function auhof_infos_seite() {
 	$e = auhof_infos_einstellungen();
 	?>
 	<div class="wrap auhof-infos-admin">
-		<h1><?php esc_html_e( 'Aktuelle Infos', 'auhof-schulseiten' ); ?></h1>
+		<h1><?php esc_html_e( 'Pinnwand', 'auhof-schulseiten' ); ?></h1>
 		<p><?php esc_html_e( 'Kurze Hinweise auf der Startseite über „Aktuelles“ und „Termine“. Nur angehakte Infos erscheinen; ist keine angehakt, wird der ganze Bereich ausgeblendet.', 'auhof-schulseiten' ); ?></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'auhof_infos' ); ?>

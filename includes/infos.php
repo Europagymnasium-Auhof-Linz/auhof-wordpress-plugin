@@ -1,9 +1,9 @@
 <?php
 /**
- * Aktuelle Infos: kurze Hinweise oberhalb von „Aktuelles“ und „Termine“ auf der Startseite,
+ * Pinnwand (Aktuelle Infos): kurze Hinweise oberhalb von „Aktuelles“ und „Termine“ auf der Startseite,
  * z. B. Volksschul-Infoabend, Neuanmeldungen, Elternabend.
  *
- * Gepflegt unter „Aktuelle Infos“ im Backend (includes/infos-admin.php), ausgegeben mit [auhof_infos].
+ * Gepflegt unter „Pinnwand“ im Backend (includes/infos-admin.php), ausgegeben mit [auhof_infos].
  * Ist keine Info zum Anzeigen angehakt, gibt der Shortcode nichts aus – auch keine Überschrift.
  *
  * @package AuhofSchulseiten
@@ -20,7 +20,7 @@ const AUHOF_INFOS_MAX = 12;
  */
 function auhof_infos_standard() {
 	return array(
-		'ueberschrift' => 'Aktuelle Infos',
+		'ueberschrift' => 'Pinnwand',
 		'eintraege'    => array(),
 	);
 }
