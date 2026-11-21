@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.6 – 21.11.2026
+- **Raumplan, Stockwerksnamen einheitlich** (`data/raumplan.json`, Eintrag in `static`):
+  - „3. Stock“ war aus der Vorlage fett und in normaler Schreibweise übernommen, die übrigen nicht fett in Großbuchstaben. Jetzt heißt er „3. STOCK“, nicht fett, gleiche Größe 13,45.
+  - Die Position bleibt (rechts neben 8C, weil links oben Räume liegen), kein Raum wird überdeckt.
+  - Wirkt am Bildschirm und im Druck. Raum-IDs und Geometrie sind unverändert.
+
 ## 1.4.5 – 21.11.2026
 - **Raumplan drucken: ganzer Plan auf A4 quer** (`assets/raumplan.js`, `assets/raumplan.css`):
   - Beim Drucken entsteht aus dem aktuellen Plan eine eigene Druckseite mit allen vier Stockwerken, im selben Maßstab und so groß wie möglich, auf A4 quer (`@page`, Rand 8 mm). Der Titel lautet „Raumplan · Schuljahr …“.
