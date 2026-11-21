@@ -1,0 +1,18 @@
+/* Auhof Schulseiten – Backend */
+.auhof-maske { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px 16px; }
+.auhof-maske__feld { margin: 0.4em 0; }
+.auhof-maske__feld label { display: block; font-weight: 600; margin-bottom: 3px; }
+.auhof-maske__feld input { width: 100%; }
+.auhof-maske__feld--zusatz, .auhof-maske__feld--email { grid-column: span 2; }
+@media (max-width: 600px) { .auhof-maske__feld--zusatz, .auhof-maske__feld--email { grid-column: auto; } }
+.column-auhof_foto { width: 56px; }
+.column-auhof_foto img { display: block; width: 40px; height: 50px; object-fit: cover; border-radius: 3px; }
+
+/* Raumplan-Seite */
+.auhof-rp-admin .form-table { max-width: 520px; }
+.auhof-rp-vorschau { margin: 1em 0 1.5em; max-width: 1180px; }
+.auhof-rp-stock { margin: 0 0 1.2em; padding: 0; border: 0; }
+.auhof-rp-stock legend { font-size: 1.1em; font-weight: 600; margin-bottom: 0.4em; }
+.auhof-rp-felder { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; }
+.auhof-rp-felder input { width: 100%; }
+.auhof-rp-felder input.ist-aktiv { border-color: #1a5fb4; box-shadow: 0 0 0 1px #1a5fb4; background: #fffbd6; }

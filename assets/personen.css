@@ -1,0 +1,70 @@
+/* Auhof Schulseiten – Personen (Lehrkräfte, Verwaltung) */
+ul.auhof-personen.auhof-personen {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: 10px;
+	list-style: none;
+	margin: 0 0 1.5em;
+	padding: 0;
+}
+ul.auhof-personen.auhof-personen--foto { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+.auhof-personen > li.auhof-person {
+	margin: 0;
+	padding: 10px 12px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+.auhof-personen > .auhof-person::before,
+.auhof-personen > .auhof-person::marker { content: none; }
+.auhof-personen > li.auhof-person--foto {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 12px;
+	line-height: 1.6;
+}
+.auhof-person img.auhof-person__foto {
+	flex: 0 0 auto;
+	display: block;
+	width: 88px;
+	height: 110px;
+	max-width: none;
+	margin: 0;
+	object-fit: cover;
+	object-position: center top;
+	border-radius: 6px;
+}
+.auhof-person__text { min-width: 0; }
+.auhof-person__titel { color: #595959; font-size: 0.85em; }
+.auhof-person__zusatz { color: #555; font-size: 0.85em; }
+
+/* A–Z-Leiste und Buchstaben-Abschnitte */
+.auhof-az { margin: 0 0 1.5em; }
+/* :not(#_) hebt die Gewichtung über die allgemeine Linkregel des Themes. */
+.auhof-az a:not(#_) {
+	display: inline-block;
+	min-width: 1.9em;
+	padding: 4px 0;
+	margin: 2px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	text-align: center;
+	text-decoration: none;
+	color: #222;
+	font-weight: 700;
+}
+.auhof-az a:not(#_):hover { border-color: #222; }
+.auhof-az__kopf {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	border-bottom: 2px solid #222;
+	margin: 1.5em 0 0.8em;
+	padding-bottom: 2px;
+}
+.auhof-az__kopf h3 { margin: 0; padding: 0; font-size: 1.4em; line-height: 1.3; }
+.auhof-az__kopf a:not(#_) { display: inline-block; padding: 2px 0; font-size: 0.8em; color: #595959; text-decoration: none; }
+.auhof-az__kopf a:not(#_):hover { text-decoration: underline; }
+[id^="lk-"] { scroll-margin-top: 90px; }
