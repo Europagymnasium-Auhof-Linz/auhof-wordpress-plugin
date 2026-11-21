@@ -2,7 +2,7 @@
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Einbinden auf einer Seite (Shortcode steht auch unter Personen → Gruppen):
 Backend → Raumplan. Schuljahr und Raumnamen ändern; der Gebäudeplan selbst liegt in data/raumplan.json.
 Einbinden: [auhof_raumplan]
 
+= Terminvorschau =
+Startseite: [auhof_termine anzahl="5"] zeigt die nächsten schulweiten Termine (Sintoora-Terminart „Allgemein (Homepage)“, ohne Klassentermine). Nutzt die zwischengespeicherten Daten des Plugins „Sintoora Kalender“; ohne dieses Plugin erscheint nur der Link zum Schulkalender.
+
 = Technik =
 Nur WordPress-Standardfunktionen, keine REST-/AJAX-Endpunkte, keine externen Abrufe.
 Personen und Gruppen sind nicht öffentlich abrufbar, nur über die Shortcodes.
@@ -30,5 +33,8 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.1.0 =
+* Terminvorschau [auhof_termine].
+
 = 1.0.0 =
 * Erste Version.

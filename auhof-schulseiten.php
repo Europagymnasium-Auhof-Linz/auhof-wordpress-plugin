@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       Auhof Schulseiten
- * Description:       Lehrkräfte, Verwaltung und Raumplan im Backend pflegen – die Seiten werden automatisch erzeugt.
- * Version:           1.0.0
+ * Description:       Lehrkräfte, Verwaltung, Raumplan und Terminvorschau – im Backend pflegen, die Seiten werden automatisch erzeugt.
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Europagymnasium Auhof
@@ -14,6 +14,7 @@
  * Shortcodes:
  *   [auhof_personen gruppe="lehrkraefte" az="ja"]  Personen einer Gruppe, optional mit A–Z-Leiste
  *   [auhof_raumplan]                                Interaktiver Raumplan
+ *   [auhof_termine anzahl="5"]                       Nächste schulweite Termine (aus dem Plugin „Sintoora Kalender“)
  *
  * Bewusst einfach gehalten: nur WordPress-Standardfunktionen (eigener Beitragstyp,
  * Taxonomie, Einstellungs-API, Shortcodes), keine REST- oder AJAX-Endpunkte,
@@ -24,12 +25,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUHOF_SCHULSEITEN_VERSION', '1.0.0' );
+define( 'AUHOF_SCHULSEITEN_VERSION', '1.1.0' );
 define( 'AUHOF_SCHULSEITEN_PFAD', plugin_dir_path( __FILE__ ) );
 define( 'AUHOF_SCHULSEITEN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/personen.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/raumplan.php';
+require_once AUHOF_SCHULSEITEN_PFAD . 'includes/termine.php';
 
 if ( is_admin() ) {
 	require_once AUHOF_SCHULSEITEN_PFAD . 'includes/personen-admin.php';
