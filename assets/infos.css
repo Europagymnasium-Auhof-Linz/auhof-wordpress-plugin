@@ -1,0 +1,25 @@
+/* Auhof Schulseiten – Aktuelle Infos (Startseite, über „Aktuelles“ und „Termine“) */
+.auhof-infos { margin: 0 0 2.5rem; }
+.auhof-infos__ueberschrift { margin: 0 0 1rem; }
+ul.auhof-infos__liste.auhof-infos__liste {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1rem;
+}
+.auhof-infos__liste > li.auhof-info {
+	margin: 0;
+	max-width: none;
+	padding: 1rem 1.25rem;
+	background: #fff;
+	border: 1px solid var(--auhof-linie-hell, #d5d9df);
+	border-top: 4px solid var(--auhof-rot, #b51525);
+	border-radius: 8px;
+}
+.auhof-infos__liste > li.auhof-info::before,
+.auhof-infos__liste > li.auhof-info::marker { content: none; }
+.auhof-info__titel { margin: 0; font-size: 1.15rem; line-height: 1.3; }
+.auhof-info__titel a { color: var(--auhof-rot-dunkel, #8a0f1b); }
+.auhof-info__text { margin: 0.4rem 0 0; color: var(--auhof-text, #333); }

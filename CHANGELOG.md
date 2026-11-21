@@ -1,5 +1,17 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.6.0 – 21.11.2026
+- **Neu: „Aktuelle Infos“** (`includes/infos.php`, `includes/infos-admin.php`, `assets/infos.css`, `assets/infos-admin.js`):
+  - Backend-Menü „Aktuelle Infos“: Einträge mit Überschrift, kurzem Text und optionalem Link; Häkchen „Anzeigen“; „+ Info hinzufügen“, „−“ entfernen (mit Rückfrage), ↑/↓ verschieben; Überschrift des Bereichs einstellbar. Höchstens 12 Einträge. Rechte wie die übrigen Schulseiten (Redakteur:innen, Administrator:innen).
+  - Startseite: `[auhof_infos]` zeigt die angehakten Einträge als Karten über „Aktuelles“ und „Termine“. Ist keiner angehakt, erscheint gar nichts.
+  - Nach dem Speichern wird die zwischengespeicherte Startseite (WP Fastest Cache) verworfen.
+- **Diashow, Barrierefreiheit:** Am Handy hatte der Pause-Knopf keinen Namen für Screenreader (Beschriftung per `display:none` ausgeblendet, seit 1.2.0). Jetzt nur optisch ausgeblendet (`assets/diashow.css`).
+- Geprüft auf der Testseite:
+  - Backend-Formular im Browser bedient (+, ↑ per Tastatur, −, Häkchen), axe 0 Befunde; die gesendeten Daten über dieselbe Bereinigung gespeichert: Reihenfolge und Häkchen übernommen.
+  - `tests/infos-test.php` 21/21: Schadcode in Titel/Text, `javascript:`-Links, Kürzung, Höchstzahl, Rechte je Rolle, keine REST-Freigabe, leere Ausgabe bei keinem bzw. keinem angehakten Eintrag.
+  - Startseite 1280/390 px: Karten über „Aktuelles“, kein Überlauf; ohne angehakte Info kein Bereich und kein zusätzlicher Abstand.
+  - Sicherheitstest 58/58, PHPCS 0 Fehler, PHP 7.4+, Semgrep 0 Befunde (34 Dateien), Seitentest 34/34, Diashow 11, Tastatur 45/45, axe 0 Befunde (Start, Raumplan, Lehrkräfte; 390/1280 px).
+
 ## 1.5.1 – 21.11.2026
 - **Raumplan: nur noch ein Knopf „Drucken (PDF)“** (`includes/raumplan.php`): Er öffnet das fertige PDF. Der bisherige Knopf „Drucken“ (Drucken der Webseite) entfällt, weil er in Safari und am Handy kein sauberes Querformat liefert.
 - **Aufgeräumt** (`assets/raumplan.js`, `assets/raumplan.css`): Geräte-Erkennung, gedrehte Grafik und `@page { size: auto }` für Handy/Safari entfernt (rund 110 Zeilen). Die einfache Druckseite für Strg+P bleibt.
