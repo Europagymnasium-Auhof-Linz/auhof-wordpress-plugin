@@ -1,8 +1,8 @@
 === Auhof Schulseiten ===
-Requires at least: 6.0
+Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,9 @@ Startseite: [auhof_termine anzahl="5"] zeigt die nächsten schulweiten Termine (
 = Diashow =
 Backend → Diashow: Bilder wählen und ordnen (Ausschnitt oben/Mitte/unten), Anzeigedauer, Breite, Höhe am Computer, Format am Handy, Bildunterschrift. Beim Speichern entstehen zugeschnittene WebP-Fassungen in uploads/auhof-diashow/ (fehlen sie, gelten die normalen Bildgrößen). Einbinden: [auhof_diashow]
 
+= Bilder =
+Verkleinerte Fassungen (Zwischengrößen, „-scaled“) werden ohne Kamera- und GPS-Daten gespeichert (verlustfrei, Farbprofil bleibt); der Bestand wird nach dem Aktivieren bzw. einem Update schrittweise im Hintergrund bereinigt. Neue Zwischengrößen von JPEG-Fotos entstehen als WebP. Originale bleiben unverändert.
+
 = Technik =
 Nur WordPress-Standardfunktionen, keine REST-/AJAX-Endpunkte, keine externen Abrufe.
 Personen und Gruppen sind nicht öffentlich abrufbar, nur über die Shortcodes.
@@ -36,6 +39,11 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+= 1.2.1 =
+* Bilder: Metadaten (EXIF/GPS) aus verkleinerten Fassungen entfernen, neue Zwischengrößen als WebP.
+* Raumplan am Handy: breitere, wischbare Stockwerksansicht und Zoom-Knöpfe.
+* Requires at least 6.3 (Skript-Option „strategy“).
+
 = 1.2.0 =
 * Diashow mit Einstellungsseite und optimierten Bildfassungen (aus dem Theme übernommen).
 

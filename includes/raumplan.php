@@ -98,6 +98,10 @@ function auhof_raumplan_html( $admin = false ) {
 		. '<div class="rp-views" role="group" aria-label="' . esc_attr__( 'Ansicht wählen', 'auhof-schulseiten' ) . '"></div>'
 		. '<div class="rp-search"><input type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="rp-results" placeholder="' . esc_attr__( 'Raum suchen, z. B. 3C, LM CH, LIB', 'auhof-schulseiten' ) . '" autocomplete="off" aria-label="' . esc_attr__( 'Raum suchen', 'auhof-schulseiten' ) . '">'
 		. '<ul class="rp-results" id="rp-results" role="listbox" aria-label="' . esc_attr__( 'Gefundene Räume', 'auhof-schulseiten' ) . '" hidden></ul></div>'
+		. '<div class="rp-zoom" role="group" aria-label="' . esc_attr__( 'Vergrößerung', 'auhof-schulseiten' ) . '">'
+		. '<button type="button" class="rp-zoom-minus" aria-label="' . esc_attr__( 'Plan verkleinern', 'auhof-schulseiten' ) . '">−</button>'
+		. '<button type="button" class="rp-zoom-plus" aria-label="' . esc_attr__( 'Plan vergrößern', 'auhof-schulseiten' ) . '">+</button>'
+		. '</div>'
 		. $drucken
 		. '</div>'
 		. '<div class="rp-sheet"><div class="rp-printonly"></div><svg xmlns="http://www.w3.org/2000/svg" role="group" aria-label="' . esc_attr__( 'Raumplan', 'auhof-schulseiten' ) . '"></svg></div>'

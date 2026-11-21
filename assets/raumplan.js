@@ -117,9 +117,35 @@
 		b.addEventListener('click', function () { setView(v[0]); updateHash(); });
 		nav.appendChild(b);
 	});
+	/* Vergrößerung (Knöpfe − / +): der Plan wird breiter und lässt sich wischen; Stufe 1 = Normalgröße. */
+	var STUFEN = [1, 1.5, 2, 3], stufe = 0;
+	var zoomMinus = root.querySelector('.rp-zoom-minus'), zoomPlus = root.querySelector('.rp-zoom-plus');
+	function zoomAnzeigen() {
+		if (zoomMinus) zoomMinus.disabled = stufe === 0;
+		if (zoomPlus) zoomPlus.disabled = stufe === STUFEN.length - 1;
+	}
+	// Ausgangsbreite messen (inkl. Mindestbreite am Handy) und vervielfachen.
+	function zoomAnwenden() {
+		svg.style.width = ''; svg.style.maxWidth = '';
+		if (!stufe || svg.style.display === 'none') return;
+		var basis = svg.getBoundingClientRect().width;
+		svg.style.maxWidth = 'none';
+		svg.style.width = Math.round(basis * STUFEN[stufe]) + 'px';
+	}
+	function zoom(richtung) {
+		stufe = Math.max(0, Math.min(STUFEN.length - 1, stufe + richtung));
+		zoomAnzeigen();
+		setView(view);
+		if (selected >= 0) reveal(selected, false);
+		statusEl.textContent = 'Vergrößerung ' + Math.round(STUFEN[stufe] * 100) + ' %';
+	}
+	if (zoomMinus) zoomMinus.addEventListener('click', function () { zoom(-1); });
+	if (zoomPlus) zoomPlus.addEventListener('click', function () { zoom(1); });
+	zoomAnzeigen();
+
 	function setView(id) {
 		view = id;
-		var useGrid = id === 'alle' ? gridOK() : false;
+		var useGrid = id === 'alle' && stufe === 0 ? gridOK() : false;
 		if (useGrid) {
 			buildGrid();
 			grid.style.display = ''; svg.style.display = 'none';
@@ -134,6 +160,7 @@
 				if (sichtbar) p.removeAttribute('aria-hidden'); else p.setAttribute('aria-hidden', 'true');
 			});
 		}
+		zoomAnwenden();
 		markRooms();
 		Array.prototype.forEach.call(nav.children, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-id') === id ? 'true' : 'false'); });
 	}

@@ -43,3 +43,12 @@
 #raumplan .rp-room:focus-visible { fill:#fff6a8; stroke:#1a5fb4; stroke-width:1.2px; }
 #raumplan button:focus-visible { outline:2px solid var(--rp-accent); outline-offset:2px; }
 #raumplan .rp-results li[aria-selected="true"] { background:#eef3fb; }
+/* Vergrößerung und Handy-Ansicht */
+#raumplan .rp-zoom { display:flex; gap:4px; margin:0; }
+#raumplan .rp-zoom button { min-width:40px; min-height:36px; font-size:18px; font-weight:bold; padding:4px 10px; }
+#raumplan .rp-zoom button:disabled { opacity:.45; cursor:default; }
+@media (max-width: 600px) {
+#raumplan svg.rp-floor { min-width:1000px; }
+#raumplan .rp-search { flex-basis:100%; max-width:none; margin:0; }
+}
+@media print { #raumplan .rp-zoom { display:none; } }
