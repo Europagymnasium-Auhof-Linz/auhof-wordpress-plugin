@@ -1,5 +1,18 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.4.5 – 21.11.2026
+- **Raumplan drucken: ganzer Plan auf A4 quer** (`assets/raumplan.js`, `assets/raumplan.css`):
+  - Beim Drucken entsteht aus dem aktuellen Plan eine eigene Druckseite mit allen vier Stockwerken, im selben Maßstab und so groß wie möglich, auf A4 quer (`@page`, Rand 8 mm). Der Titel lautet „Raumplan · Schuljahr …“.
+  - Ansicht („Alle“ oder ein Stockwerk), Vergrößerung und Gerät spielen keine Rolle. Umbenannte Räume und ein markierter Raum erscheinen im Druck, weil die Druckseite erst beim Drucken gebaut wird.
+  - Vorher hatte jedes Stockwerk im Raster eine eigene Höhengrenze und wurde daher unterschiedlich stark verkleinert; große Teile der Seite blieben leer.
+  - Bei schmalerem Papier oder größeren Rändern schrumpfen alle Stockwerke gemeinsam.
+  - Die Druckregeln aus 1.4.2/1.4.3 (Höhengrenzen für den Bildschirmplan) sind ersetzt.
+- Geprüft:
+  - 160 PDFs: Computer 1920/1280/820 px und Handy, alle Ansichten, normal/vergrößert/verkleinert, Standard, mit Kopf-/Fußzeile, 20 mm Rand, Letter. Alle ergeben genau 1 Seite quer, ohne Skriptfehler, mit identischer Druckgröße.
+  - Fünf Papier-/Randvarianten: nichts abgeschnitten, Maßstab überall gleich.
+  - Bildschirmansicht pixelgleich wie vorher.
+  - Beim Entwickeln verkleinerte eine `(orientation: portrait)`-Regel den Druck auch quer auf 68 %. Das zeigte erst das angesehene PDF; die Regel wurde entfernt.
+
 ## 1.4.4 – 21.11.2026
 - **Sicherheit, Datenumstellungen:**
   - `auhof_personen_daten_aktualisieren()` (Datenstand 2) und `auhof_organigramm_reihenfolge_uebernehmen()` (Datenstand 3) liefen bisher auf `init`, also auch beim ersten Seitenaufruf eines beliebigen Besuchers nach dem Update.

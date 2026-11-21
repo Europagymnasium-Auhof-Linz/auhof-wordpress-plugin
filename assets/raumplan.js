@@ -75,6 +75,91 @@
 		el('text', { x: s.x, y: s.y, 'font-size': s.size, 'font-weight': s.bold ? 'bold' : 'normal' }, gText).textContent = s.t;
 	});
 
+	/* Druck: immer alle Stockwerke auf einer A4-Seite quer, alle im selben Maßstab und so groß wie möglich –
+	   unabhängig von Ansicht und Vergrößerung. Die Druckseite wird erst beim Drucken aus dem aktuellen Plan
+	   gebaut (geänderte Raumnamen, markierter Raum). Seitenformat und Rand: @page in raumplan.css. */
+	var DRUCK = { breite: 277, hoehe: 188, titel: 9, abstand: 6 }; // mm: A4 quer 297 × 210 minus 8 mm Rand und 2 mm Reserve
+	var DRUCK_STOCK = ['3', '2', '1', 'eg'];
+	var stockRahmen = {};
+	// Eng zugeschnittener Ausschnitt je Stockwerk (aus den Plandaten, innerhalb der Stockwerksansicht).
+	DRUCK_STOCK.forEach(function (id) {
+		var v = P.views[id], x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+		function dazu(x, y, w, h) {
+			if (y + h < v[1] || y > v[1] + v[3] || x + w < v[0] || x > v[0] + v[2]) return;
+			x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x + w); y1 = Math.max(y1, y + h);
+		}
+		P.fills.forEach(function (f) { dazu(f[0], f[1], f[2], f[3]); });
+		P.borders.forEach(function (b) { dazu(b[0], b[1], b[2], b[3]); });
+		P.rooms.forEach(function (r) { if (r.f === id) r.shape.forEach(function (s) { dazu(s[0], s[1], s[2], s[3]); }); });
+		P.static.forEach(function (s) { dazu(s.x, s.y - s.size, textWidth(s.t, s.bold) * s.size, s.size * 1.25); });
+		if (x0 === Infinity) { stockRahmen[id] = v.slice(); return; }
+		x0 = Math.max(v[0], x0 - 2); y0 = Math.max(v[1], y0 - 2); x1 = Math.min(v[0] + v[2], x1 + 2); y1 = Math.min(v[1] + v[3], y1 + 2);
+		stockRahmen[id] = [x0, y0, x1 - x0, y1 - y0];
+	});
+	// Anordnung mit dem größten Maßstab: zwei Spalten (links oben → unten, dann rechts) oder zwei Zeilen,
+	// Reihenfolge der Stockwerke bleibt erhalten.
+	function druckAnordnung() {
+		var B = DRUCK.breite, H = DRUCK.hoehe - DRUCK.titel, g = DRUCK.abstand, beste = null;
+		function w(id) { return stockRahmen[id][2]; }
+		function h(id) { return stockRahmen[id][3]; }
+		function summe(l, f) { return l.reduce(function (a, id) { return a + f(id); }, 0); }
+		function groesst(l, f) { return Math.max.apply(null, l.map(f)); }
+		for (var k = 1; k < DRUCK_STOCK.length; k++) {
+			var a = DRUCK_STOCK.slice(0, k), b = DRUCK_STOCK.slice(k);
+			[
+				['spalten', Math.min((B - g) / (groesst(a, w) + groesst(b, w)), (H - g * (a.length - 1)) / summe(a, h), (H - g * (b.length - 1)) / summe(b, h))],
+				['zeilen', Math.min((H - g) / (groesst(a, h) + groesst(b, h)), (B - g * (a.length - 1)) / summe(a, w), (B - g * (b.length - 1)) / summe(b, w))]
+			].forEach(function (c) { if (!beste || c[1] > beste.mm + 1e-9) beste = { art: c[0], gruppen: [a, b], mm: c[1] }; });
+		}
+		return beste;
+	}
+	var druck = document.createElement('div');
+	druck.className = 'rp-druck';
+	druck.setAttribute('aria-hidden', 'true');
+	root.appendChild(druck);
+	function druckBauen() {
+		var a = druckAnordnung();
+		while (druck.firstChild) druck.removeChild(druck.firstChild);
+		var titel = document.createElement('p');
+		titel.className = 'rp-druck-titel';
+		titel.textContent = 'Raumplan · ' + P.year;
+		druck.appendChild(titel);
+		var flaeche = document.createElement('div');
+		flaeche.className = 'rp-druck-flaeche rp-druck-' + a.art;
+		druck.appendChild(flaeche);
+		// Maße in mm für A4 quer mit 8 mm Rand; bei weniger Platz (größerer Rand im Druckdialog) schrumpft alles
+		// gemeinsam (flex-shrink im Verhältnis der Breiten, Höhe folgt der viewBox).
+		a.gruppen.forEach(function (gruppe) {
+			var box = document.createElement('div'), breit = 0;
+			box.className = 'rp-druck-gruppe';
+			gruppe.forEach(function (id) { breit = a.art === 'spalten' ? Math.max(breit, stockRahmen[id][2]) : breit + stockRahmen[id][2]; });
+			if (a.art === 'spalten') { box.style.flex = '0 1 ' + (breit * a.mm).toFixed(1) + 'mm'; box.style.width = (breit * a.mm).toFixed(1) + 'mm'; }
+			flaeche.appendChild(box);
+			gruppe.forEach(function (id) {
+				var c = svg.cloneNode(true), r = stockRahmen[id];
+				c.removeAttribute('style'); c.removeAttribute('role'); c.removeAttribute('aria-label');
+				c.setAttribute('class', 'rp-druck-stock');
+				c.setAttribute('viewBox', r.join(' '));
+				if (a.art === 'spalten') {
+					// Untereinander: Breite als Anteil der Spalte, damit beim Schrumpfen alle denselben Maßstab behalten.
+					c.style.width = (r[2] / breit * 100).toFixed(3) + '%';
+					c.style.flex = 'none';
+				} else {
+					c.style.width = (r[2] * a.mm).toFixed(1) + 'mm';
+					c.style.flex = '0 1 ' + c.style.width;
+				}
+				c.style.maxWidth = '100%';
+				c.style.height = 'auto';
+				Array.prototype.forEach.call(c.querySelectorAll('.rp-room'), function (p) {
+					if (P.rooms[+p.getAttribute('data-i')].f !== id) p.parentNode.removeChild(p);
+					else { p.removeAttribute('tabindex'); p.removeAttribute('role'); }
+				});
+				box.appendChild(c);
+			});
+		});
+	}
+	window.addEventListener('beforeprint', druckBauen);
+
 	var sheet = root.querySelector('.rp-sheet');
 	var grid = document.createElement('div');
 	grid.className = 'rp-grid'; grid.style.display = 'none';
@@ -108,7 +193,7 @@
 	}
 	function gridOK() { return root.clientWidth >= 860; }
 	var printBtn = root.querySelector('.rp-print');
-	if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+	if (printBtn) printBtn.addEventListener('click', function () { druckBauen(); window.print(); });
 
 	/* Ansichten */
 	[['alle', 'Alle'], ['eg', 'EG'], ['1', '1. Stock'], ['2', '2. Stock'], ['3', '3. Stock']].forEach(function (v) {
