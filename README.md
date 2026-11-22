@@ -4,14 +4,22 @@ WordPress-Plugin der Website des Europagymnasiums Auhof (Linz): Personen, Organi
 
 - **Lizenz:** GPL-2.0-or-later (siehe `LICENSE`)
 - **Voraussetzungen:** WordPress 6.3+, PHP 7.4+. Für die Terminvorschau zusätzlich das Plugin „Sintoora Kalender“ (eigenes Repository).
-- **Versionen:** Jede Version ist ein Commit mit Tag (`v1.0.0` … `v1.7.1`), die Änderungen stehen in `CHANGELOG.md`.
+- **Versionen:** Jede Version ist ein Commit mit Tag (`v1.0.0` … `v1.8.0`), die Änderungen stehen in `CHANGELOG.md`.
 
-## Installieren
+## Updates auf den Websites
+
+Ab Version 1.8.0 holt sich WordPress neue Versionen selbst aus diesem Repository (`Update URI` im Plugin-Kopf, Klasse `includes/class-auhof-codeberg-updater.php`):
+
+- **Neue Version veröffentlichen = Tag `vX.Y.Z` pushen.** Spätestens nach 6 Stunden zeigt jede Website unter Plugins „Aktualisierung verfügbar“; sofort mit Dashboard → Aktualisierungen → „Erneut prüfen“.
+- Installiert wird beim Klick auf „Jetzt aktualisieren“ – oder von selbst, wenn für das Plugin automatische Updates eingeschaltet sind.
+- Ein Tag ist damit eine Veröffentlichung: erst taggen, wenn die Version getestet ist. Vorabversionen (`v2.0.0-beta`) werden nicht angeboten.
+
+## Erstinstallation
 
 Das Repository ist der Plugin-Ordner selbst. Für WordPress braucht es eine ZIP-Datei, in der der Ordner `auhof-schulseiten/` liegt:
 
 ```
-git archive --format=zip --prefix=auhof-schulseiten/ -o auhof-schulseiten-1.7.1.zip v1.7.1
+git archive --format=zip --prefix=auhof-schulseiten/ -o auhof-schulseiten-1.8.0.zip v1.8.0
 ```
 
 Dann in WordPress unter Plugins → Installieren → Plugin hochladen. `README.md`, `CHANGELOG.md`, `ENTWICKLUNG.md`, `tests/` und die Git-Dateien sind über `.gitattributes` vom Archiv ausgenommen und landen nicht auf dem Webserver. Auch die Download-Schaltfläche von Codeberg liefert so ein Archiv; dort heißt der Ordner aber `auhof-wordpress-plugin` (Name des Repositories) und muss vor dem Hochladen in `auhof-schulseiten` umbenannt werden.
@@ -29,12 +37,13 @@ wp --allow-root --exec='define("WP_ADMIN",true);' eval-file tests/schulseiten-si
 - `raumplan-pdf-test.php`: PDF des Raumplans.
 - `schulseiten-csv-test.php`: CSV-Import und -Export. Stellt den Datenstand danach wieder her.
 - `raumplan-pdf-prototyp.mjs`: JavaScript-Vorlage des PDF-Schreibers.
+- `codeberg-update-test.php`: Updater beider Plugins, mit nachgebildetem Codeberg (keine Verbindung nach außen nötig). Installiert dabei Testversionen; danach den ursprünglichen Plugin-Ordner wieder einspielen.
 
 ---
 
 # Plugin „Auhof Schulseiten“
 
-**Aktuelle Version:** 1.7.1. Was sich geändert hat, steht in `CHANGELOG.md`.
+**Aktuelle Version:** 1.8.0. Was sich geändert hat, steht in `CHANGELOG.md`.
 
 ## Aufgabe
 Mit diesem Plugin pflegt die Schule ohne HTML-Kenntnisse im Backend:
@@ -60,6 +69,7 @@ Zusätzlich zeigt es eine **Terminvorschau** aus Sintoora und hält **Bilder** s
 | `includes/raumplan-admin.php` | Backend-Seite „Raumplan“ mit Vorschau (Einstellungs-API) |
 | `includes/infos.php` | „Aktuelle Infos“: Option `auhof_infos`, Bereinigung eines Eintrags, Shortcode `[auhof_infos]`, Seiten-Cache der Startseite leeren nach dem Speichern |
 | `includes/infos-admin.php` | Backend-Seite „Pinnwand“ (Einstellungs-API, + / − / ↑ / ↓, „Anzeigen“), höchstens 12 Einträge |
+| `includes/class-auhof-codeberg-updater.php` | Updates aus Codeberg: Das Plugin trägt im Kopf `Update URI: https://codeberg.org/europagym-auhof/…`. WordPress fragt deshalb nie wordpress.org (Schutz vor gleichnamigen Fremd-Plugins), sondern ruft `update_plugins_codeberg.org` auf. Die Updater-Klasse liest die Tags des öffentlichen Repositories (`vX.Y.Z`, höchste gültige Version) und bietet das Tag-Archiv als Paket an. Beim Installieren benennt sie den Ordner (Repository-Name) in den Plugin-Ordner um, prüft vorher, dass die Hauptdatei darin liegt, und aktiviert das Plugin bei einem Abbruch wieder so wie vorher. Zwischenspeicher 6 h (nach Fehlern 1 h), „Erneut prüfen“ unter Dashboard → Aktualisierungen leert ihn. **Neue Version veröffentlichen = Tag auf Codeberg** – danach bietet jede Website das Update an (bzw. installiert es, wenn automatische Updates für das Plugin eingeschaltet sind). Die Klasse steckt in beiden Plugins (eigener Name), Änderungen in beiden nachziehen. Test: `tests/codeberg-update-test.php` (bildet Codeberg nach, 46 Prüfungen). |
 | `includes/termine.php` | Shortcode `[auhof_termine anzahl="5"]`: nächste schulweite Termine aus dem Sintoora-Plugin |
 | `includes/diashow.php` | Option `auhof_diashow`, Shortcode `[auhof_diashow]`, optimierte WebP-Fassungen in `uploads/auhof-diashow/`, WP-Cron `auhof_diashow_erzeugen` |
 | `includes/diashow-admin.php` | Backend-Seite „Diashow“ (Mediathek-Auswahl, Reihenfolge, Ausschnitt, Dauer, Breite, Höhe, Format) |

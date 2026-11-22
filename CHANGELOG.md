@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.8.0 – 22.11.2026
+- **Updates aus Codeberg** (`includes/class-auhof-codeberg-updater.php`, Plugin-Kopf `Update URI`): WordPress bietet neue Versionen aus dem öffentlichen Repository `europagym-auhof/auhof-wordpress-plugin` an. Auslöser ist ein neuer Tag `vX.Y.Z`; das Paket ist das Tag-Archiv von Codeberg, der Ordner wird beim Installieren in `auhof-schulseiten` umbenannt.
+  - Sicherheit: nur https zur fest eingetragenen Adresse, keine Weiterleitungen, Antwort höchstens 256 KB, Versionsnummern streng geprüft (Beta-, Schad- und Pfad-Tags werden ignoriert), keine Angaben über die Website im Abruf. Ein Paket ohne die Plugin-Hauptdatei wird abgelehnt; das Plugin bleibt dann unverändert und aktiv.
+  - „Details ansehen“ in der Plugin-Liste verlinkt auf Codeberg.
+- Geprüft auf der Testseite mit nachgebildetem Codeberg (der Staging-Schutz sperrt die echte Verbindung): `tests/codeberg-update-test.php` 46/46 für beide Plugins – Versionsauswahl, Fehlerfälle, Zwischenspeicher, WordPress-Update-Prüfung, Installation als Hintergrund-Update und über „Jetzt aktualisieren“, abgelehntes Paket. Sicherheitstest 58/58, Pinnwand 35/35, PDF 19/19, PHPCS/PHP 7.4+/Semgrep ohne Befund.
+
 ## 1.7.1 – 21.11.2026
 - **Pinnwand, großes Bild bei nur einer Info** (`includes/infos.php`, `assets/infos.css`): Eine einzelne Info bekam die ganze Breite (1200 px), das Foto wurde 16:9 und damit 674 px hoch. Jetzt steht ein großes Bild in breiten Kästchen (ab 560 px) links neben dem Text, höchstens 40 % bzw. 440 px breit – das Kästchen ist rund 250 statt 773 px hoch. In schmalen Kästchen (mehrere Infos nebeneinander, Handy) bleibt es oben.
   - Technik: Container-Abfrage auf dem Kästchen, neue innere Hülle `.auhof-info__karte`. Browser ohne Container-Abfragen zeigen das Bild oben wie bisher.
