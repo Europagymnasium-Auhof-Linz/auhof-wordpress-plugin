@@ -2,14 +2,14 @@
 /**
  * Plugin Name:       Auhof Schulseiten
  * Description:       Lehrkräfte, Verwaltung, Organigramm, Raumplan, Terminvorschau und Diashow – im Backend pflegen, die Seiten werden automatisch erzeugt.
- * Version:           1.8.0
+ * Version:           1.8.1
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Europagymnasium Auhof
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       auhof-schulseiten
- * Update URI:        https://codeberg.org/europagym-auhof/auhof-wordpress-plugin
+ * Update URI:        https://codeberg.org/europagymnasium-auhof-linz/auhof-wordpress-plugin
  *
  * Shortcodes:
  *   [auhof_personen gruppe="lehrkraefte" az="ja"]  Personen einer Gruppe, optional mit A–Z-Leiste
@@ -28,7 +28,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUHOF_SCHULSEITEN_VERSION', '1.8.0' );
+define( 'AUHOF_SCHULSEITEN_VERSION', '1.8.1' );
 define( 'AUHOF_SCHULSEITEN_PFAD', plugin_dir_path( __FILE__ ) );
 define( 'AUHOF_SCHULSEITEN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -43,7 +43,7 @@ require_once AUHOF_SCHULSEITEN_PFAD . 'includes/organigramm.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/class-auhof-codeberg-updater.php';
 
 // Updates aus Codeberg (auch im Hintergrund per WP-Cron, daher nicht nur im Backend).
-new Auhof_Codeberg_Updater( __FILE__, 'europagym-auhof/auhof-wordpress-plugin', 'Auhof Schulseiten', AUHOF_SCHULSEITEN_VERSION );
+new Auhof_Codeberg_Updater( __FILE__, 'europagymnasium-auhof-linz/auhof-wordpress-plugin', 'Auhof Schulseiten', AUHOF_SCHULSEITEN_VERSION );
 
 if ( is_admin() ) {
 	require_once AUHOF_SCHULSEITEN_PFAD . 'includes/personen-admin.php';

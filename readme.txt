@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,8 +46,11 @@ Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option
 
 == Changelog ==
 
+= 1.8.1 =
+* Updates: neue Adresse des Repositorys (Organisation europagymnasium-auhof-linz); Weiterleitungen von Codeberg werden innerhalb von codeberg.org gefolgt, damit ein späterer Umzug Updates nicht mehr unterbricht.
+
 = 1.8.0 =
-* Updates aus Codeberg: WordPress bietet neue Versionen aus dem öffentlichen Repository europagym-auhof/auhof-wordpress-plugin an (neuer Tag vX.Y.Z).
+* Updates aus Codeberg: WordPress bietet neue Versionen aus dem öffentlichen Repository europagymnasium-auhof-linz/auhof-wordpress-plugin an (neuer Tag vX.Y.Z).
 
 = 1.7.1 =
 * Pinnwand: großes Bild steht in breiten Kästchen (z. B. nur eine Info) links neben dem Text statt riesig darüber.

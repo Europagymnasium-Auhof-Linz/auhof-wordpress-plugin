@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.8.1 – 23.11.2026
+- **Updates nach Umzug des Repositorys** (`includes/class-auhof-codeberg-updater.php`, Plugin-Kopf `Update URI`): Die Repositories liegen jetzt in der Organisation `europagymnasium-auhof-linz`. Version 1.8.0 fragte fest bei `europagym-auhof/…` an und folgte Weiterleitungen grundsätzlich nicht – nach dem Umzug kamen dort keine Updates mehr an.
+  - Neue Adresse im Plugin-Kopf und im Updater.
+  - Weiterleitungen von Codeberg werden jetzt schrittweise geprüft und gefolgt: höchstens drei, nur zu Adressen unter `https://codeberg.org/` (auch relative Angaben). Jedes andere Ziel (anderer Server, http, ähnlich klingender Name) gilt weiter als Fehler. Ein späterer Umzug oder eine Umbenennung unterbricht Updates damit nicht mehr.
+  - Einmalig: Websites mit 1.8.0 bekommen 1.8.1 nicht automatisch angeboten (sie fragen noch an der alten Adresse) – 1.8.1 einmal von Hand installieren.
+
 ## 1.8.0 – 22.11.2026
 - **Updates aus Codeberg** (`includes/class-auhof-codeberg-updater.php`, Plugin-Kopf `Update URI`): WordPress bietet neue Versionen aus dem öffentlichen Repository `europagym-auhof/auhof-wordpress-plugin` an. Auslöser ist ein neuer Tag `vX.Y.Z`; das Paket ist das Tag-Archiv von Codeberg, der Ordner wird beim Installieren in `auhof-schulseiten` umbenannt.
   - Sicherheit: nur https zur fest eingetragenen Adresse, keine Weiterleitungen, Antwort höchstens 256 KB, Versionsnummern streng geprüft (Beta-, Schad- und Pfad-Tags werden ignoriert), keine Angaben über die Website im Abruf. Ein Paket ohne die Plugin-Hauptdatei wird abgelehnt; das Plugin bleibt dann unverändert und aktiv.

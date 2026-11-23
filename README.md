@@ -43,7 +43,7 @@ wp --allow-root --exec='define("WP_ADMIN",true);' eval-file tests/schulseiten-si
 
 # Plugin „Auhof Schulseiten“
 
-**Aktuelle Version:** 1.8.0. Was sich geändert hat, steht in `CHANGELOG.md`.
+**Aktuelle Version:** 1.8.1. Was sich geändert hat, steht in `CHANGELOG.md`.
 
 ## Aufgabe
 Mit diesem Plugin pflegt die Schule ohne HTML-Kenntnisse im Backend:
@@ -69,7 +69,7 @@ Zusätzlich zeigt es eine **Terminvorschau** aus Sintoora und hält **Bilder** s
 | `includes/raumplan-admin.php` | Backend-Seite „Raumplan“ mit Vorschau (Einstellungs-API) |
 | `includes/infos.php` | „Aktuelle Infos“: Option `auhof_infos`, Bereinigung eines Eintrags, Shortcode `[auhof_infos]`, Seiten-Cache der Startseite leeren nach dem Speichern |
 | `includes/infos-admin.php` | Backend-Seite „Pinnwand“ (Einstellungs-API, + / − / ↑ / ↓, „Anzeigen“), höchstens 12 Einträge |
-| `includes/class-auhof-codeberg-updater.php` | Updates aus Codeberg: Das Plugin trägt im Kopf `Update URI: https://codeberg.org/europagym-auhof/…`. WordPress fragt deshalb nie wordpress.org (Schutz vor gleichnamigen Fremd-Plugins), sondern ruft `update_plugins_codeberg.org` auf. Die Updater-Klasse liest die Tags des öffentlichen Repositories (`vX.Y.Z`, höchste gültige Version) und bietet das Tag-Archiv als Paket an. Beim Installieren benennt sie den Ordner (Repository-Name) in den Plugin-Ordner um, prüft vorher, dass die Hauptdatei darin liegt, und aktiviert das Plugin bei einem Abbruch wieder so wie vorher. Zwischenspeicher 6 h (nach Fehlern 1 h), „Erneut prüfen“ unter Dashboard → Aktualisierungen leert ihn. **Neue Version veröffentlichen = Tag auf Codeberg** – danach bietet jede Website das Update an (bzw. installiert es, wenn automatische Updates für das Plugin eingeschaltet sind). Die Klasse steckt in beiden Plugins (eigener Name), Änderungen in beiden nachziehen. Test: `tests/codeberg-update-test.php` (bildet Codeberg nach, 46 Prüfungen). |
+| `includes/class-auhof-codeberg-updater.php` | Updates aus Codeberg: Das Plugin trägt im Kopf `Update URI: https://codeberg.org/europagymnasium-auhof-linz/…`. WordPress fragt deshalb nie wordpress.org (Schutz vor gleichnamigen Fremd-Plugins), sondern ruft `update_plugins_codeberg.org` auf. Die Updater-Klasse liest die Tags des öffentlichen Repositories (`vX.Y.Z`, höchste gültige Version) und bietet das Tag-Archiv als Paket an. Beim Installieren benennt sie den Ordner (Repository-Name) in den Plugin-Ordner um, prüft vorher, dass die Hauptdatei darin liegt, und aktiviert das Plugin bei einem Abbruch wieder so wie vorher. Zwischenspeicher 6 h (nach Fehlern 1 h), „Erneut prüfen“ unter Dashboard → Aktualisierungen leert ihn. **Neue Version veröffentlichen = Tag auf Codeberg** – danach bietet jede Website das Update an (bzw. installiert es, wenn automatische Updates für das Plugin eingeschaltet sind). Die Klasse steckt in beiden Plugins (eigener Name), Änderungen in beiden nachziehen. Test: `tests/codeberg-update-test.php` (bildet Codeberg nach, 46 Prüfungen). |
 | `includes/termine.php` | Shortcode `[auhof_termine anzahl="5"]`: nächste schulweite Termine aus dem Sintoora-Plugin |
 | `includes/diashow.php` | Option `auhof_diashow`, Shortcode `[auhof_diashow]`, optimierte WebP-Fassungen in `uploads/auhof-diashow/`, WP-Cron `auhof_diashow_erzeugen` |
 | `includes/diashow-admin.php` | Backend-Seite „Diashow“ (Mediathek-Auswahl, Reihenfolge, Ausschnitt, Dauer, Breite, Höhe, Format) |
