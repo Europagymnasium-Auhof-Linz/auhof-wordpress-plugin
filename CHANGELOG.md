@@ -1,5 +1,14 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.9.0 – 23.11.2026
+- **Beitragsseite „Aktuelles“: Umschalter „Neueste | Beliebteste“** (neu: `includes/beliebteste.php`, `assets/beliebteste.css`). Ersetzt die frühere eigene Seite mit Kadence-Reitern (brauchte das Plugin Kadence Blocks und eine zweite, eigens gestaltete Beitragsliste).
+  - Zwei Links unter der Überschrift (Navigation mit `aria-current`, 44 px hoch, ohne JavaScript). „Neueste“ = Beitragsseite wie bisher, „Beliebteste“ = dieselbe Seite unter `…/beliebteste/` mit denselben Kacheln, Seitennummern `…/beliebteste/page/2/`.
+  - Sortierung nach Likes aus WP ULike (`wp_ulike_get_popular_items_ids()`), gezählt im laufenden Schuljahr ab 1. September; haben weniger als drei Beiträge Likes (z. B. im September), zählt das vorige Schuljahr mit. Hinweis über den Kacheln: „Beiträge mit den meisten Likes seit September 2026.“ Nur Beiträge mit Likes, höchstens 100.
+  - Ohne WP ULike: kein Umschalter, `…/beliebteste/` leitet auf die Beitragsseite um.
+  - „Beliebteste“ wird nicht zwischengespeichert (`DONOTCACHEPAGE`, Reihenfolge ändert sich mit jedem Like) und trägt `noindex`; Browsertitel „Aktuelles – Beliebteste“.
+  - Adresse der Beitragsseite wird aus Einstellungen → Lesen übernommen; die Rewrite-Regel wird bei Änderungen neu geschrieben.
+- Geprüft auf der Testseite (Staging mit WP ULike 5.2.6.1 und Test-Likes, danach entfernt): `tests/beliebteste-test.php` 33/33 (Schuljahr, Rückgriff aufs Vorjahr, Reihenfolge, Ausgabe, `aria-current`, Seitennummern, `noindex`, Fremdwerte, Leerzustand), 1280/390 px ohne Überlauf, axe ohne Befund; Sicherheit 58/58, Pinnwand 35/35, PDF 19/19, Termine 54/54, `php -l` ohne Befund.
+
 ## 1.8.3 – 23.11.2026
 - **Terminvorschau zeigt alle Termine außer freien Tagen** (`includes/termine.php`): Bisher fielen zusätzlich alle Termine weg, die in Sintoora einer Klasse zugeordnet sind oder „Kl. 4L“ im Titel tragen (z. B. iKM-Plus, Sprachreisen, Performance, Skikurs) – die Vorschau war dadurch sehr dünn. Jetzt erscheinen alle kommenden Termine der Terminart „Allgemein (Homepage)“; ausgeblendet werden nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage (`auhof_termine_ist_frei()`, unverändert).
   - Derselbe Termin für mehrere Klassen (gleiches Datum, gleiche Zeit, gleicher Titel) erscheint nur einmal.

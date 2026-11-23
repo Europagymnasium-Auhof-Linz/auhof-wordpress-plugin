@@ -1,0 +1,56 @@
+/* Beitragsseite: Umschalter „Neueste | Beliebteste“ (includes/beliebteste.php) */
+.auhof-beitragsansicht {
+	margin: 1rem 0 0;
+}
+.auhof-beitragsansicht ul {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid var(--auhof-linie, #6E747B);
+	border-radius: var(--auhof-radius, 6px);
+	overflow: hidden;
+}
+.auhof-beitragsansicht li {
+	margin: 0;
+}
+.auhof-beitragsansicht li + li {
+	border-left: 1px solid var(--auhof-linie, #6E747B);
+}
+.auhof-beitragsansicht a {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 0.4em 1.25em;
+	background: #fff;
+	color: var(--auhof-text-stark, #222);
+	font-weight: 600;
+	text-decoration: none;
+}
+.auhof-beitragsansicht a:hover {
+	background: var(--auhof-flaeche, #F3F4F6);
+	text-decoration: underline;
+}
+.auhof-beitragsansicht a[aria-current="page"] {
+	background: var(--auhof-rot, #B51525);
+	color: #fff;
+}
+.auhof-beitragsansicht a[aria-current="page"]:hover {
+	background: var(--auhof-rot-dunkel, #8A0F1B);
+}
+.auhof-beitragsansicht a:focus-visible {
+	outline: 3px solid var(--auhof-fokus, #222);
+	outline-offset: -3px;
+}
+.auhof-beitragsansicht__hinweis {
+	margin: 0.75rem 0 0;
+	color: var(--auhof-text-2, #545A61);
+	font-size: 0.95rem;
+}
+@media (forced-colors: active) {
+	.auhof-beitragsansicht a[aria-current="page"] {
+		border-bottom: 3px solid CanvasText;
+	}
+}

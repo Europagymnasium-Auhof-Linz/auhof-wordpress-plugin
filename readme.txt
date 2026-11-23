@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.8.3
+Stable tag: 1.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,8 @@ Backend → Raumplan. Schuljahr und Raumnamen ändern; der Gebäudeplan selbst l
 Einbinden: [auhof_raumplan]
 
 = Terminvorschau =
+Beitragsseite „Aktuelles“: Umschalter „Neueste | Beliebteste“ unter der Überschrift. „Beliebteste“ (…/beliebteste/) zeigt dieselben Kacheln, sortiert nach Likes im laufenden Schuljahr (Plugin „WP ULike“ nötig; ohne WP ULike kein Umschalter).
+
 Startseite: [auhof_termine anzahl="5"] zeigt die nächsten Termine der Sintoora-Terminart „Allgemein (Homepage)“ (auch Klassentermine; ohne Ferien, Feiertage und schulfreie bzw. schulautonome Tage). Nutzt die zwischengespeicherten Daten des Plugins „Sintoora Kalender“; ohne dieses Plugin erscheint nur der Link zum Schulkalender.
 
 = Diashow =
@@ -45,6 +47,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+
+= 1.9.0 =
+* Beitragsseite: Umschalter „Neueste | Beliebteste“; „Beliebteste“ sortiert nach Likes (WP ULike) im laufenden Schuljahr, eigene Adresse …/beliebteste/ mit Seitennummern.
 
 = 1.8.3 =
 * Terminvorschau der Startseite: alle Termine der Terminart „Allgemein (Homepage)“ erscheinen, auch die einzelner Klassen; ausgeblendet werden nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage. Gleiche Termine mehrerer Klassen erscheinen einmal.
