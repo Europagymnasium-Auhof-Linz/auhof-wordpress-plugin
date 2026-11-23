@@ -1,6 +1,6 @@
 <?php
 /**
- * Test Terminvorschau: Ferien/Feiertage ausblenden (auhof_termine_ist_frei, ab Auhof 1.8.2).
+ * Test Terminvorschau: nur Ferien/Feiertage/schulautonome Tage ausblenden (auhof_termine_ist_frei, ab 1.8.2), Klassentermine zeigen (ab 1.8.3).
  *   wp eval-file termine-frei-test.php
  * Titel = alle Einträge „Allgemein (Homepage)“ ohne Klasse aus dem Kalender vom 23.11.2026, dazu Grenzfälle.
  */
@@ -76,4 +76,29 @@ foreach ( $m[1] as $li ) { $tit[] = trim( preg_replace( '/\s+/u', ' ', wp_strip_
 $frei = array_filter( $tit, 'auhof_termine_ist_frei' );
 if ( ! $frei ) { $ok++; } else { $f++; WP_CLI::log( '  FEHLER Vorschau enthält: ' . implode( ' | ', $frei ) ); }
 WP_CLI::log( '  Vorschau (bis 20): ' . count( $tit ) . ' Termine, z. B. ' . implode( ' | ', array_slice( $tit, 0, 4 ) ) );
+// Ab 1.8.3: alle kommenden Termine der Terminart erscheinen (auch Klassentermine), nur freie Tage nicht; Doppelte einmal.
+$liste = auhof_termine_liste();
+$erwartet = array();
+$d = sintoora_kalender_termine();
+$jahr = (int) wp_date( 'Y', isset( $d['zeit'] ) ? (int) $d['zeit'] : time() );
+foreach ( $d['appointments'] as $t ) {
+	if ( AUHOF_TERMINE_TERMINART !== sintoora_kalender_terminart( $t ) ) { continue; }
+	$e = auhof_termine_auswerten( $t, $jahr );
+	if ( ! $e || $e['ende'] < current_time( 'Y-m-d' ) || auhof_termine_ist_frei( $e['titel'] ) ) { continue; }
+	$erwartet[ $e['beginn'] . '|' . $e['ende'] . '|' . $e['zeit'] . '|' . mb_strtolower( $e['titel'] ) ] = $e;
+}
+uasort( $erwartet, function ( $a, $b ) { return strcmp( $a['beginn'] . $a['zeit'], $b['beginn'] . $b['zeit'] ); } );
+$erwartet = array_slice( array_values( $erwartet ), 0, 20 );
+if ( $liste === $erwartet ) { $ok++; } else { $f++; WP_CLI::log( '  FEHLER Liste weicht ab: ' . count( $liste ) . ' statt ' . count( $erwartet ) ); }
+$schluessel = array_map( function ( $e ) { return $e['beginn'] . '|' . $e['ende'] . '|' . $e['zeit'] . '|' . mb_strtolower( $e['titel'] ); }, $liste );
+if ( count( $schluessel ) === count( array_unique( $schluessel ) ) ) { $ok++; } else { $f++; WP_CLI::log( '  FEHLER doppelte Termine in der Vorschau' ); }
+$mit_klasse = 0;
+foreach ( $d['appointments'] as $t ) {
+	if ( AUHOF_TERMINE_TERMINART === sintoora_kalender_terminart( $t ) && sintoora_kalender_hat_klasse( $t ) ) {
+		$e = auhof_termine_auswerten( $t, $jahr );
+		if ( $e && in_array( $e, $liste, true ) ) { $mit_klasse++; }
+	}
+}
+if ( $mit_klasse > 0 ) { $ok++; } else { $f++; WP_CLI::log( '  FEHLER keine Klassentermine in der Vorschau' ); }
+WP_CLI::log( "  Klassentermine in der Vorschau: $mit_klasse" );
 WP_CLI::log( "Ergebnis: $ok bestanden, $f fehlgeschlagen" );

@@ -3,9 +3,11 @@
  * Terminvorschau: die nächsten schulweiten Termine aus dem Plugin „Sintoora Kalender“.
  *
  * Verwendet nur die Termine, die das Sintoora-Plugin ohnehin zwischenspeichert (kein eigener
- * Abruf bei Sintoora). Gezeigt wird die Terminart „Allgemein (Homepage)“ ohne Klassenzuordnung,
- * z. B. Elternsprechtag, Infoabende, Schulfeste. Ferien, Feiertage und schulfreie Tage stehen in Sintoora
- * unter derselben Terminart; sie werden anhand des Titels ausgeblendet (auhof_termine_ist_frei()).
+ * Abruf bei Sintoora). Gezeigt werden alle Termine der Terminart „Allgemein (Homepage)“ – auch solche,
+ * die einzelnen Klassen zugeordnet sind (z. B. iKM-Plus, Sprachreisen, Performance Kl. 4L). Ausgeblendet
+ * werden nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage, erkannt am Titel
+ * (auhof_termine_ist_frei()). Gleiche Termine mehrerer Klassen (gleicher Tag, gleiche Zeit, gleicher Titel)
+ * erscheinen einmal.
  *
  * @package AuhofSchulseiten
  */
@@ -47,32 +49,32 @@ function auhof_termine_liste() {
 	if ( is_array( $cache ) && isset( $cache['tag'], $cache['liste'], $cache['version'] ) && $cache['tag'] === $heute && AUHOF_SCHULSEITEN_VERSION === $cache['version'] ) {
 		return $cache['liste'];
 	}
-	if ( ! function_exists( 'sintoora_kalender_termine' ) || ! function_exists( 'sintoora_kalender_terminart' ) || ! function_exists( 'sintoora_kalender_hat_klasse' ) ) {
+	if ( ! function_exists( 'sintoora_kalender_termine' ) || ! function_exists( 'sintoora_kalender_terminart' ) ) {
 		return null;
 	}
 	$daten = sintoora_kalender_termine();
 	if ( ! is_array( $daten ) || empty( $daten['appointments'] ) || ! is_array( $daten['appointments'] ) ) {
 		return null;
 	}
-	$jahr  = (int) wp_date( 'Y', isset( $daten['zeit'] ) ? (int) $daten['zeit'] : time() );
-	$liste = array();
+	$jahr    = (int) wp_date( 'Y', isset( $daten['zeit'] ) ? (int) $daten['zeit'] : time() );
+	$liste   = array();
+	$gesehen = array();
 	foreach ( $daten['appointments'] as $termin ) {
-		if ( AUHOF_TERMINE_TERMINART !== sintoora_kalender_terminart( $termin ) || sintoora_kalender_hat_klasse( $termin ) ) {
+		if ( AUHOF_TERMINE_TERMINART !== sintoora_kalender_terminart( $termin ) ) {
 			continue;
 		}
 		$eintrag = auhof_termine_auswerten( $termin, $jahr );
-		// Termine einzelner Klassen („Kl. 1A, 1B“, „Klasse 1D“) gehören nicht auf die Startseite;
-		// Jahrgangstermine („alle 5. Klassen“) bleiben.
-		if ( $eintrag && preg_match( '/\bKl(?:\.|asse|assen)\s*\d[a-z]/iu', $eintrag['titel'] ) ) {
+		// Nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage gehören nicht in die Terminvorschau.
+		if ( ! $eintrag || $eintrag['ende'] < $heute || auhof_termine_ist_frei( $eintrag['titel'] ) ) {
 			continue;
 		}
-		// Ferien, Feiertage und schulfreie Tage gehören nicht in die Terminvorschau.
-		if ( $eintrag && auhof_termine_ist_frei( $eintrag['titel'] ) ) {
+		// Derselbe Termin für mehrere Klassen (z. B. „iKM-Plus Englisch“ für 4A und 4B) nur einmal.
+		$schluessel = $eintrag['beginn'] . '|' . $eintrag['ende'] . '|' . $eintrag['zeit'] . '|' . mb_strtolower( $eintrag['titel'] );
+		if ( isset( $gesehen[ $schluessel ] ) ) {
 			continue;
 		}
-		if ( $eintrag && $eintrag['ende'] >= $heute ) {
-			$liste[] = $eintrag;
-		}
+		$gesehen[ $schluessel ] = true;
+		$liste[]                = $eintrag;
 	}
 	usort(
 		$liste,

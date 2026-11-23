@@ -43,7 +43,7 @@ wp --allow-root --exec='define("WP_ADMIN",true);' eval-file tests/schulseiten-si
 
 # Plugin „Auhof Schulseiten“
 
-**Aktuelle Version:** 1.8.2. Was sich geändert hat, steht in `CHANGELOG.md`.
+**Aktuelle Version:** 1.8.3. Was sich geändert hat, steht in `CHANGELOG.md`.
 
 ## Aufgabe
 Mit diesem Plugin pflegt die Schule ohne HTML-Kenntnisse im Backend:

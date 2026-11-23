@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Backend → Raumplan. Schuljahr und Raumnamen ändern; der Gebäudeplan selbst l
 Einbinden: [auhof_raumplan]
 
 = Terminvorschau =
-Startseite: [auhof_termine anzahl="5"] zeigt die nächsten schulweiten Termine (Sintoora-Terminart „Allgemein (Homepage)“, ohne Klassentermine). Nutzt die zwischengespeicherten Daten des Plugins „Sintoora Kalender“; ohne dieses Plugin erscheint nur der Link zum Schulkalender.
+Startseite: [auhof_termine anzahl="5"] zeigt die nächsten Termine der Sintoora-Terminart „Allgemein (Homepage)“ (auch Klassentermine; ohne Ferien, Feiertage und schulfreie bzw. schulautonome Tage). Nutzt die zwischengespeicherten Daten des Plugins „Sintoora Kalender“; ohne dieses Plugin erscheint nur der Link zum Schulkalender.
 
 = Diashow =
 Backend → Diashow: Bilder wählen und ordnen (Ausschnitt oben/Mitte/unten), Anzeigedauer, Breite, Höhe am Computer, Format am Handy, Bildunterschrift. Beim Speichern entstehen zugeschnittene WebP-Fassungen in uploads/auhof-diashow/ (fehlen sie, gelten die normalen Bildgrößen). Einbinden: [auhof_diashow]
@@ -45,6 +45,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+
+= 1.8.3 =
+* Terminvorschau der Startseite: alle Termine der Terminart „Allgemein (Homepage)“ erscheinen, auch die einzelner Klassen; ausgeblendet werden nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage. Gleiche Termine mehrerer Klassen erscheinen einmal.
 
 = 1.8.2 =
 * Terminvorschau der Startseite: Ferien, Feiertage und schulfreie Tage werden ausgeblendet (Erkennung am Titel); im Klassenkalender bleiben sie.

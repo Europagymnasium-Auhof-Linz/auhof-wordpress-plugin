@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.8.3 – 23.11.2026
+- **Terminvorschau zeigt alle Termine außer freien Tagen** (`includes/termine.php`): Bisher fielen zusätzlich alle Termine weg, die in Sintoora einer Klasse zugeordnet sind oder „Kl. 4L“ im Titel tragen (z. B. iKM-Plus, Sprachreisen, Performance, Skikurs) – die Vorschau war dadurch sehr dünn. Jetzt erscheinen alle kommenden Termine der Terminart „Allgemein (Homepage)“; ausgeblendet werden nur Ferien, Feiertage und schulfreie bzw. schulautonome Tage (`auhof_termine_ist_frei()`, unverändert).
+  - Derselbe Termin für mehrere Klassen (gleiches Datum, gleiche Zeit, gleicher Titel) erscheint nur einmal.
+  - Die Vorschau setzt `sintoora_kalender_hat_klasse()` nicht mehr voraus.
+- Geprüft: `tests/termine-frei-test.php` 54/54 (zusätzlich: Liste = alle nicht freien Termine, keine Doppelten, Klassentermine enthalten), Sicherheit 58/58, Pinnwand 35/35, PDF 19/19, `php -l` ohne Befund.
+
 ## 1.8.2 – 23.11.2026
 - **Terminvorschau ohne Ferien und Feiertage** (`includes/termine.php`): Ferien, Feiertage und schulfreie Tage stehen in Sintoora unter derselben Terminart wie echte Termine („Allgemein (Homepage)“). Sie werden jetzt am Titel erkannt und in der Startseiten-Vorschau ausgeblendet; im Klassenkalender bleiben sie.
   - `auhof_termine_ist_frei()`: Wortteile „Ferien“, „Feiertag“, „schulfrei“, „schulautonom“ und die österreichischen Feiertage (inkl. Florianitag). „unterrichtsfrei“ allein zählt nicht (z. B. Elternsprechtag mit unterrichtsfreiem Nachmittag bleibt). Erweiterbar über den Filter `auhof_termine_frei_muster`.
