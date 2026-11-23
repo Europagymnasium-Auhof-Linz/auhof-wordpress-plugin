@@ -1,5 +1,12 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.8.2 – 23.11.2026
+- **Terminvorschau ohne Ferien und Feiertage** (`includes/termine.php`): Ferien, Feiertage und schulfreie Tage stehen in Sintoora unter derselben Terminart wie echte Termine („Allgemein (Homepage)“). Sie werden jetzt am Titel erkannt und in der Startseiten-Vorschau ausgeblendet; im Klassenkalender bleiben sie.
+  - `auhof_termine_ist_frei()`: Wortteile „Ferien“, „Feiertag“, „schulfrei“, „schulautonom“ und die österreichischen Feiertage (inkl. Florianitag). „unterrichtsfrei“ allein zählt nicht (z. B. Elternsprechtag mit unterrichtsfreiem Nachmittag bleibt). Erweiterbar über den Filter `auhof_termine_frei_muster`.
+  - Der Zwischenspeicher der Vorschau trägt die Plugin-Version und wird nach einem Update sofort neu aufgebaut.
+  - Grenze: Die Erkennung hängt an der Schreibweise in Sintoora (z. B. „Maria Empfaengnis“ ohne „ä“ würde nicht erkannt).
+- Geprüft: `tests/termine-frei-test.php` 51/51 (alle 42 Titel des aktuellen Kalenders, Grenzfälle, fehlerhaftes Muster, Ausgabe der Vorschau), Updater 58/58, Sicherheit 58/58, Pinnwand 35/35, PDF 19/19, PHPCS/PHP 7.4+/Semgrep ohne Befund.
+
 ## 1.8.1 – 23.11.2026
 - **Updates nach Umzug des Repositorys** (`includes/class-auhof-codeberg-updater.php`, Plugin-Kopf `Update URI`): Die Repositories liegen jetzt in der Organisation `europagymnasium-auhof-linz`. Version 1.8.0 fragte fest bei `europagym-auhof/…` an und folgte Weiterleitungen grundsätzlich nicht – nach dem Umzug kamen dort keine Updates mehr an.
   - Neue Adresse im Plugin-Kopf und im Updater.

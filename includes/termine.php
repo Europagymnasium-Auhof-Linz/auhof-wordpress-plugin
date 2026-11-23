@@ -3,8 +3,9 @@
  * Terminvorschau: die nächsten schulweiten Termine aus dem Plugin „Sintoora Kalender“.
  *
  * Verwendet nur die Termine, die das Sintoora-Plugin ohnehin zwischenspeichert (kein eigener
- * Abruf bei Sintoora). Gezeigt wird die Terminart „Allgemein (Homepage)“ ohne Klassenzuordnung:
- * Ferien, Feiertage, schulautonome Tage, Elternsprechtag usw.
+ * Abruf bei Sintoora). Gezeigt wird die Terminart „Allgemein (Homepage)“ ohne Klassenzuordnung,
+ * z. B. Elternsprechtag, Infoabende, Schulfeste. Ferien, Feiertage und schulfreie Tage stehen in Sintoora
+ * unter derselben Terminart; sie werden anhand des Titels ausgeblendet (auhof_termine_ist_frei()).
  *
  * @package AuhofSchulseiten
  */
@@ -18,6 +19,24 @@ const AUHOF_TERMINE_TERMINART = 'allgemein (homepage)';
 const AUHOF_TERMINE_CACHE = 'auhof_termine_vorschau';
 
 /**
+ * Ferien, Feiertage und schulfreie Tage am Titel erkennen (sie erscheinen nicht in der Terminvorschau,
+ * wohl aber weiterhin im Klassenkalender). Erkannt werden Wortteile wie „Ferien“, „Feiertag“, „schulfrei“,
+ * „schulautonom“ sowie die österreichischen Feiertage (inkl. Florianitag, Landespatron Oberösterreich).
+ * „unterrichtsfrei“ allein zählt nicht: „Elternsprechtag, ab 12:30 Uhr unterrichtsfrei“ ist ein Termin.
+ * Erweiterbar über den Filter „auhof_termine_frei_muster“ (regulärer Ausdruck).
+ *
+ * @param string $titel Titel des Termins.
+ * @return bool
+ */
+function auhof_termine_ist_frei( $titel ) {
+	$muster = (string) apply_filters(
+		'auhof_termine_frei_muster',
+		'/ferien|feiertag|schulfrei|schulautonom|neujahr|heilige drei k(ö|oe)nige|dreik(ö|oe)nig|ostermontag|christi himmelfahrt|pfingstmontag|fronleichnam|mari(ä|ae) himmelfahrt|allerheiligen|allerseelen|mari(ä|ae) empf(ä|ae)ngnis|floriani?tag|heiliger florian|christtag|stefanitag/iu'
+	);
+	return 1 === @preg_match( $muster, (string) $titel ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- fehlerhaftes Muster aus dem Filter: nichts ausblenden.
+}
+
+/**
  * Kommende schulweite Termine (ab heute, laufende eingeschlossen), aufbereitet und 15 Minuten zwischengespeichert.
  *
  * @return array<int,array<string,string>>|null Null, wenn das Sintoora-Plugin fehlt oder keine Daten hat.
@@ -25,7 +44,7 @@ const AUHOF_TERMINE_CACHE = 'auhof_termine_vorschau';
 function auhof_termine_liste() {
 	$heute = current_time( 'Y-m-d' );
 	$cache = get_transient( AUHOF_TERMINE_CACHE );
-	if ( is_array( $cache ) && isset( $cache['tag'], $cache['liste'] ) && $cache['tag'] === $heute ) {
+	if ( is_array( $cache ) && isset( $cache['tag'], $cache['liste'], $cache['version'] ) && $cache['tag'] === $heute && AUHOF_SCHULSEITEN_VERSION === $cache['version'] ) {
 		return $cache['liste'];
 	}
 	if ( ! function_exists( 'sintoora_kalender_termine' ) || ! function_exists( 'sintoora_kalender_terminart' ) || ! function_exists( 'sintoora_kalender_hat_klasse' ) ) {
@@ -47,6 +66,10 @@ function auhof_termine_liste() {
 		if ( $eintrag && preg_match( '/\bKl(?:\.|asse|assen)\s*\d[a-z]/iu', $eintrag['titel'] ) ) {
 			continue;
 		}
+		// Ferien, Feiertage und schulfreie Tage gehören nicht in die Terminvorschau.
+		if ( $eintrag && auhof_termine_ist_frei( $eintrag['titel'] ) ) {
+			continue;
+		}
 		if ( $eintrag && $eintrag['ende'] >= $heute ) {
 			$liste[] = $eintrag;
 		}
@@ -61,8 +84,9 @@ function auhof_termine_liste() {
 	set_transient(
 		AUHOF_TERMINE_CACHE,
 		array(
-			'tag'   => $heute,
-			'liste' => $liste,
+			'tag'     => $heute,
+			'liste'   => $liste,
+			'version' => AUHOF_SCHULSEITEN_VERSION,
 		),
 		15 * MINUTE_IN_SECONDS
 	);
