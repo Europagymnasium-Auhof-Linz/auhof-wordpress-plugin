@@ -4,7 +4,7 @@ WordPress-Plugin der Website des Europagymnasiums Auhof (Linz): Personen, Organi
 
 - **Lizenz:** GPL-2.0-or-later (siehe `LICENSE`)
 - **Voraussetzungen:** WordPress 6.3+, PHP 7.4+. Für die Terminvorschau zusätzlich das Plugin „Sintoora Kalender“ (eigenes Repository).
-- **Versionen:** Jede Version ist ein Commit mit Tag (`v1.0.0` … `v1.8.0`), die Änderungen stehen in `CHANGELOG.md`.
+- **Versionen:** Jede Version ist ein Commit mit Tag (`v1.0.0` … `v1.11.0`), die Änderungen stehen in `CHANGELOG.md`.
 
 ## Updates auf den Websites
 
@@ -21,7 +21,7 @@ Ab Version 1.11.0 holt sich WordPress neue Versionen **nur noch aus diesem GitHu
 Das Repository ist der Plugin-Ordner selbst. Für WordPress braucht es eine ZIP-Datei, in der der Ordner `auhof-schulseiten/` liegt:
 
 ```
-git archive --format=zip --prefix=auhof-schulseiten/ -o auhof-schulseiten-1.8.0.zip v1.8.0
+git archive --format=zip --prefix=auhof-schulseiten/ -o auhof-schulseiten-1.11.0.zip v1.11.0
 ```
 
 Dann in WordPress unter Plugins → Installieren → Plugin hochladen. `README.md`, `CHANGELOG.md`, `ENTWICKLUNG.md`, `tests/` und die Git-Dateien sind über `.gitattributes` vom Archiv ausgenommen und landen nicht auf dem Webserver. Auch „Code → Download ZIP“ bzw. das Archiv eines Tags auf GitHub liefert so ein Archiv; dort heißt der Ordner aber `auhof-wordpress-plugin-1.11.0` (Repository-Name und Version) und muss vor dem Hochladen in `auhof-schulseiten` umbenannt werden.
