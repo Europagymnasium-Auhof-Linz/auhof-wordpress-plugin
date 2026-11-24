@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Auhof Schulseiten
  * Description:       Lehrkräfte, Verwaltung, Organigramm, Raumplan, Terminvorschau und Diashow – im Backend pflegen, die Seiten werden automatisch erzeugt. Dazu „Neueste | Beliebteste“ auf der Beitragsseite.
- * Version:           1.9.0
+ * Version:           1.10.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Europagymnasium Auhof
@@ -20,15 +20,15 @@
  *
  * Bewusst einfach gehalten: nur WordPress-Standardfunktionen (eigener Beitragstyp,
  * Taxonomie, Einstellungs-API, Shortcodes), keine REST- oder AJAX-Endpunkte,
- * keine externen Bibliotheken. Einziger externer Abruf: die Update-Prüfung bei Codeberg
- * (includes/class-auhof-codeberg-updater.php), nur im Hintergrund bzw. im Backend, nie für Besucher.
+ * keine externen Bibliotheken. Einziger externer Abruf: die Update-Prüfung bei GitHub und Codeberg
+ * (includes/class-auhof-updater.php), nur im Hintergrund bzw. im Backend, nie für Besucher.
  *
  * @package AuhofSchulseiten
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUHOF_SCHULSEITEN_VERSION', '1.9.0' );
+define( 'AUHOF_SCHULSEITEN_VERSION', '1.10.0' );
 define( 'AUHOF_SCHULSEITEN_PFAD', plugin_dir_path( __FILE__ ) );
 define( 'AUHOF_SCHULSEITEN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -41,10 +41,20 @@ require_once AUHOF_SCHULSEITEN_PFAD . 'includes/diashow.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/bilder.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/organigramm.php';
 require_once AUHOF_SCHULSEITEN_PFAD . 'includes/beliebteste.php';
-require_once AUHOF_SCHULSEITEN_PFAD . 'includes/class-auhof-codeberg-updater.php';
+require_once AUHOF_SCHULSEITEN_PFAD . 'includes/class-auhof-updater.php';
 
-// Updates aus Codeberg (auch im Hintergrund per WP-Cron, daher nicht nur im Backend).
-new Auhof_Codeberg_Updater( __FILE__, 'europagymnasium-auhof-linz/auhof-wordpress-plugin', 'Auhof Schulseiten', AUHOF_SCHULSEITEN_VERSION );
+// Updates (auch im Hintergrund per WP-Cron, daher nicht nur im Backend). Übergang: GitHub und Codeberg werden
+// gefragt, die höhere Version gewinnt (bei Gleichstand GitHub). Nach dem Umzug nur noch 'github.com' eintragen
+// und oben „Update URI: https://github.com/Europagymnasium-Auhof-Linz/auhof-wordpress-plugin“ setzen.
+new Auhof_Updater(
+	__FILE__,
+	array(
+		'github.com'   => 'Europagymnasium-Auhof-Linz/auhof-wordpress-plugin',
+		'codeberg.org' => 'europagymnasium-auhof-linz/auhof-wordpress-plugin',
+	),
+	'Auhof Schulseiten',
+	AUHOF_SCHULSEITEN_VERSION
+);
 
 if ( is_admin() ) {
 	require_once AUHOF_SCHULSEITEN_PFAD . 'includes/personen-admin.php';

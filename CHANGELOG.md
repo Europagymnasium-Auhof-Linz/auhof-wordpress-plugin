@@ -1,5 +1,14 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.10.0 – 24.11.2026
+- **Updates aus GitHub und Codeberg** (neu: `includes/class-auhof-updater.php`, ersetzt `class-auhof-codeberg-updater.php`): Übergang für den Umzug nach GitHub. Das Plugin fragt beide Repositories – GitHub `Europagymnasium-Auhof-Linz/auhof-wordpress-plugin` und Codeberg `europagymnasium-auhof-linz/auhof-wordpress-plugin` – und bietet die höhere Version an (bei Gleichstand von GitHub).
+  - GitHub: Tags über `api.github.com`, Paket `/archive/refs/tags/vX.Y.Z.zip` (Ordner `auhof-wordpress-plugin-X.Y.Z` wird in `auhof-schulseiten` umbenannt).
+  - Fällt eine Quelle aus (z. B. GitHub-Abrufgrenze 60 Anfragen/Stunde je Server ohne Anmeldung, Serverfehler, falsche Antwort), zählt die andere; dann nur 1 Stunde statt 6 zwischengespeichert.
+  - Weiterleitungen wie bisher nur innerhalb desselben Servers (GitHub: nur `api.github.com`), höchstens drei; https, 256 KB, strenge Versionsprüfung, keine Website-Angaben im Abruf.
+  - „Details ansehen“ verlinkt beide Repositories.
+  - `Update URI` bleibt in dieser Version auf Codeberg. **Nach dem Umzug** (nächste Version, auf GitHub veröffentlicht): `Update URI` auf GitHub setzen und nur noch `github.com` als Quelle eintragen – dann zählen nur noch GitHub-Updates.
+- Geprüft auf der Testseite: `tests/plugin-update-test.php` 100/100 für beide Plugins (Versionswahl zwischen den Quellen, Gleichstand, Ausfälle 403/429/500/kein JSON/Objekt je Quelle, Zwischenspeicher 6 h/1 h, Weiterleitungen inkl. abgelehnter Ziele, WordPress-Update-Prüfung, „Details ansehen“, kaputtes Paket, Installation aus GitHub- und Codeberg-Archiv im Hintergrund und im Browser), Sicherheit 58/58, Pinnwand 35/35, PDF 19/19, Termine 54/54, Beliebteste 33/33, `php -l` ohne Befund.
+
 ## 1.9.0 – 23.11.2026
 - **Beitragsseite „Aktuelles“: Umschalter „Neueste | Beliebteste“** (neu: `includes/beliebteste.php`, `assets/beliebteste.css`). Ersetzt die frühere eigene Seite mit Kadence-Reitern (brauchte das Plugin Kadence Blocks und eine zweite, eigens gestaltete Beitragsliste).
   - Zwei Links unter der Überschrift (Navigation mit `aria-current`, 44 px hoch, ohne JavaScript). „Neueste“ = Beitragsseite wie bisher, „Beliebteste“ = dieselbe Seite unter `…/beliebteste/` mit denselben Kacheln, Seitennummern `…/beliebteste/page/2/`.

@@ -2,7 +2,7 @@
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.0
+Stable tag: 1.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,9 @@ Berechtigung: Recht „edit_others_pages“ (Redakteur, Administrator); änderba
 Beim Löschen des Plugins bleiben alle Daten erhalten (Personen, Gruppen, Option „auhof_raumplan“).
 
 == Changelog ==
+
+= 1.10.0 =
+* Updates aus GitHub (Europagymnasium-Auhof-Linz/auhof-wordpress-plugin) und Codeberg: die höhere Version gewinnt – Übergang für den Umzug nach GitHub.
 
 = 1.9.0 =
 * Beitragsseite: Umschalter „Neueste | Beliebteste“; „Beliebteste“ sortiert nach Likes (WP ULike) im laufenden Schuljahr, eigene Adresse …/beliebteste/ mit Seitennummern.
