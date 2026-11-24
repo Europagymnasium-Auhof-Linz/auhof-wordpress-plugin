@@ -8,9 +8,9 @@ WordPress-Plugin der Website des Europagymnasiums Auhof (Linz): Personen, Organi
 
 ## Updates auf den Websites
 
-Ab Version 1.10.0 holt sich WordPress neue Versionen selbst (`Update URI` im Plugin-Kopf, Klasse `includes/class-auhof-updater.php`). Übergangsweise fragt das Plugin **GitHub und Codeberg** und nimmt die höhere Version (bei Gleichstand GitHub); nach dem Umzug fragt es nur noch GitHub:
+Ab Version 1.11.0 holt sich WordPress neue Versionen **nur noch aus diesem GitHub-Repository** (`Update URI: https://github.com/Europagymnasium-Auhof-Linz/auhof-wordpress-plugin` im Plugin-Kopf, Klasse `includes/class-auhof-updater.php`, nimmt keinen anderen Server an):
 
-- GitHub: `Europagymnasium-Auhof-Linz/auhof-wordpress-plugin`, Codeberg: `europagymnasium-auhof-linz/auhof-wordpress-plugin` (1.8.0 bis 1.9.0 fragen nur Codeberg).
+- Frühere Versionen: 1.8.0–1.9.0 fragten nur Codeberg, 1.10.0 (Übergang) GitHub und Codeberg. Websites mit einer älteren Version kommen trotzdem hierher: Sie installieren zuerst die Übergangsversion aus Codeberg und finden dann die GitHub-Versionen.
 
 - **Neue Version veröffentlichen = Tag `vX.Y.Z` pushen.** Spätestens nach 6 Stunden zeigt jede Website unter Plugins „Aktualisierung verfügbar“; sofort mit Dashboard → Aktualisierungen → „Erneut prüfen“.
 - Installiert wird beim Klick auf „Jetzt aktualisieren“ – oder von selbst, wenn für das Plugin automatische Updates eingeschaltet sind.
@@ -24,7 +24,7 @@ Das Repository ist der Plugin-Ordner selbst. Für WordPress braucht es eine ZIP-
 git archive --format=zip --prefix=auhof-schulseiten/ -o auhof-schulseiten-1.8.0.zip v1.8.0
 ```
 
-Dann in WordPress unter Plugins → Installieren → Plugin hochladen. `README.md`, `CHANGELOG.md`, `ENTWICKLUNG.md`, `tests/` und die Git-Dateien sind über `.gitattributes` vom Archiv ausgenommen und landen nicht auf dem Webserver. Auch die Download-Schaltfläche von Codeberg liefert so ein Archiv; dort heißt der Ordner aber `auhof-wordpress-plugin` (Name des Repositories) und muss vor dem Hochladen in `auhof-schulseiten` umbenannt werden.
+Dann in WordPress unter Plugins → Installieren → Plugin hochladen. `README.md`, `CHANGELOG.md`, `ENTWICKLUNG.md`, `tests/` und die Git-Dateien sind über `.gitattributes` vom Archiv ausgenommen und landen nicht auf dem Webserver. Auch „Code → Download ZIP“ bzw. das Archiv eines Tags auf GitHub liefert so ein Archiv; dort heißt der Ordner aber `auhof-wordpress-plugin-1.11.0` (Repository-Name und Version) und muss vor dem Hochladen in `auhof-schulseiten` umbenannt werden.
 
 ## Tests (`tests/`)
 
@@ -39,13 +39,13 @@ wp --allow-root --exec='define("WP_ADMIN",true);' eval-file tests/schulseiten-si
 - `raumplan-pdf-test.php`: PDF des Raumplans.
 - `schulseiten-csv-test.php`: CSV-Import und -Export. Stellt den Datenstand danach wieder her.
 - `raumplan-pdf-prototyp.mjs`: JavaScript-Vorlage des PDF-Schreibers.
-- `plugin-update-test.php`: Updater beider Plugins mit nachgebildetem GitHub und Codeberg (keine Verbindung nach außen nötig): Versionswahl zwischen den Quellen, Ausfälle (z. B. GitHub-Abrufgrenze), Weiterleitungen, Installation aus beiden Archivformen. Installiert dabei Testversionen; danach die ursprünglichen Ordner BEIDER Plugins wieder einspielen.
+- `plugin-update-test.php`: Updater beider Plugins mit nachgebildetem GitHub (keine Verbindung nach außen nötig): Versionswahl, Codeberg wird nie gefragt, Ausfälle (z. B. GitHub-Abrufgrenze), Weiterleitungen nur innerhalb api.github.com, Installation aus dem GitHub-Archiv. Installiert dabei Testversionen; danach die ursprünglichen Ordner BEIDER Plugins wieder einspielen.
 
 ---
 
 # Plugin „Auhof Schulseiten“
 
-**Aktuelle Version:** 1.10.0. Was sich geändert hat, steht in `CHANGELOG.md`.
+**Aktuelle Version:** 1.11.0. Was sich geändert hat, steht in `CHANGELOG.md`.
 
 ## Aufgabe
 Mit diesem Plugin pflegt die Schule ohne HTML-Kenntnisse im Backend:
@@ -73,7 +73,7 @@ Zusätzlich zeigt es eine **Terminvorschau** aus Sintoora und hält **Bilder** s
 | `includes/raumplan-admin.php` | Backend-Seite „Raumplan“ mit Vorschau (Einstellungs-API) |
 | `includes/infos.php` | „Aktuelle Infos“: Option `auhof_infos`, Bereinigung eines Eintrags, Shortcode `[auhof_infos]`, Seiten-Cache der Startseite leeren nach dem Speichern |
 | `includes/infos-admin.php` | Backend-Seite „Pinnwand“ (Einstellungs-API, + / − / ↑ / ↓, „Anzeigen“), höchstens 12 Einträge |
-| `includes/class-auhof-updater.php` | Updates aus GitHub und Codeberg (ab 1.10.0, vorher nur Codeberg in `class-auhof-codeberg-updater.php`): Das Plugin trägt im Kopf `Update URI: https://codeberg.org/…` (Übergang; nach dem Umzug `https://github.com/…`). WordPress fragt deshalb nie wordpress.org (Schutz vor gleichnamigen Fremd-Plugins), sondern ruft `update_plugins_<server>` auf; die Klasse hängt sich für jeden eingetragenen Server ein. Sie liest die Tags aller Quellen (`vX.Y.Z`; GitHub über `api.github.com/repos/…/tags`, Codeberg über `/api/v1/repos/…/tags`), nimmt die höchste gültige Version (bei Gleichstand die zuerst eingetragene Quelle = GitHub) und bietet deren Tag-Archiv an (GitHub: `/archive/refs/tags/vX.Y.Z.zip`, Ordner `repo-X.Y.Z`; Codeberg: `/archive/vX.Y.Z.zip`, Ordner `repo`). Beim Installieren benennt sie den Ordner in den Plugin-Ordner um, prüft vorher die Hauptdatei und aktiviert das Plugin bei einem Abbruch wieder so wie vorher. Weiterleitungen nur innerhalb desselben Servers (GitHub: `api.github.com`), höchstens drei. Fällt eine Quelle aus (GitHub: 60 Anfragen/Stunde je Server ohne Anmeldung), zählt die andere; Zwischenspeicher 6 h, nach einem Ausfall 1 h. „Erneut prüfen“ leert ihn. **Umzug abschließen:** im Plugin-Kopf `Update URI` auf GitHub setzen und beim `new Auhof_Updater( … )` nur noch `github.com` eintragen. Die Klasse steckt in beiden Plugins (eigener Name), Änderungen in beiden nachziehen. Test: `tests/plugin-update-test.php` (bildet GitHub und Codeberg nach, 100 Prüfungen für beide Plugins). |
+| `includes/class-auhof-updater.php` | **Ab 1.11.0 nur GitHub:** `Update URI: https://github.com/Europagymnasium-Auhof-Linz/auhof-wordpress-plugin`, die Klasse nimmt nur `github.com` an (Codeberg-Zweig entfernt), eigener Zwischenspeicher `auhof_update_github_…`. Geschichte: 1.8.0–1.9.0 nur Codeberg (`class-auhof-codeberg-updater.php`), 1.10.0 Übergang GitHub + Codeberg, wie folgt beschrieben: Das Plugin trägt im Kopf `Update URI: https://codeberg.org/…` (Übergang; nach dem Umzug `https://github.com/…`). WordPress fragt deshalb nie wordpress.org (Schutz vor gleichnamigen Fremd-Plugins), sondern ruft `update_plugins_<server>` auf; die Klasse hängt sich für jeden eingetragenen Server ein. Sie liest die Tags aller Quellen (`vX.Y.Z`; GitHub über `api.github.com/repos/…/tags`, Codeberg über `/api/v1/repos/…/tags`), nimmt die höchste gültige Version (bei Gleichstand die zuerst eingetragene Quelle = GitHub) und bietet deren Tag-Archiv an (GitHub: `/archive/refs/tags/vX.Y.Z.zip`, Ordner `repo-X.Y.Z`; Codeberg: `/archive/vX.Y.Z.zip`, Ordner `repo`). Beim Installieren benennt sie den Ordner in den Plugin-Ordner um, prüft vorher die Hauptdatei und aktiviert das Plugin bei einem Abbruch wieder so wie vorher. Weiterleitungen nur innerhalb desselben Servers (GitHub: `api.github.com`), höchstens drei. Fällt eine Quelle aus (GitHub: 60 Anfragen/Stunde je Server ohne Anmeldung), zählt die andere; Zwischenspeicher 6 h, nach einem Ausfall 1 h. „Erneut prüfen“ leert ihn. **Umzug abschließen:** im Plugin-Kopf `Update URI` auf GitHub setzen und beim `new Auhof_Updater( … )` nur noch `github.com` eintragen. Die Klasse steckt in beiden Plugins (eigener Name), Änderungen in beiden nachziehen. Test: `tests/plugin-update-test.php` (bildet GitHub und Codeberg nach, 100 Prüfungen für beide Plugins). |
 | `includes/termine.php` | Shortcode `[auhof_termine anzahl="5"]`: nächste Termine der Terminart „Allgemein (Homepage)“ aus dem Sintoora-Plugin, ohne Ferien, Feiertage und schulautonome Tage |
 | `includes/beliebteste.php`, `assets/beliebteste.css` | Beitragsseite: Umschalter „Neueste | Beliebteste“ unter der Überschrift (Kadence-Hook `kadence_archive_after_entry_header`). „Beliebteste“ = dieselbe Seite unter `…/beliebteste/` (eigene Rewrite-Regel, `pre_get_posts` mit `post__in` aus `wp_ulike_get_popular_items_ids()`), Likes des laufenden Schuljahres (ab 1. 9.; unter 3 Beiträgen zählt das vorige Schuljahr mit), nur Beiträge mit Likes, höchstens 100. Ohne WP ULike kein Umschalter, `…/beliebteste/` leitet auf die Beitragsseite um. Nicht zwischengespeichert (`DONOTCACHEPAGE`), `noindex`. Test: `tests/beliebteste-test.php` |
 | `includes/diashow.php` | Option `auhof_diashow`, Shortcode `[auhof_diashow]`, optimierte WebP-Fassungen in `uploads/auhof-diashow/`, WP-Cron `auhof_diashow_erzeugen` |

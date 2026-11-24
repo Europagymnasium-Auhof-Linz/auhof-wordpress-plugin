@@ -1,5 +1,11 @@
 # Changelog „Auhof Schulseiten“
 
+## 1.11.0 – 24.11.2026
+- **Updates nur noch aus GitHub** (`includes/class-auhof-updater.php`, Plugin-Kopf): `Update URI: https://github.com/Europagymnasium-Auhof-Linz/auhof-wordpress-plugin`, einzige Quelle ist das GitHub-Repository. Codeberg wird nicht mehr gefragt; die Klasse nimmt keinen anderen Server als `github.com` an, auch wenn einer eingetragen würde.
+  - Eigener Zwischenspeicher (`auhof_update_github_…`): Ergebnisse der Übergangsversion 1.10.0 (die auch Codeberg kannte) gelten nicht weiter.
+  - Websites mit 1.8.0–1.9.0 (nur Codeberg) erreichen GitHub über die Übergangsversion 1.10.0 auf Codeberg; das Codeberg-Repository darum stehen lassen, bis alle Websites mindestens 1.10.0 haben.
+- Geprüft auf der Testseite: `tests/plugin-update-test.php` 80/80 für beide Plugins (Update URI GitHub, kein Codeberg-Filter, Codeberg nicht angenommen und nie gefragt – auch wenn dort eine höhere Version läge, alter Zwischenspeicher ignoriert, Fehlerfälle 403/429/500/kein JSON/Objekt/leere Liste, Weiterleitungen nur innerhalb api.github.com, WordPress-Update-Prüfung, „Details ansehen“ nur mit GitHub, kaputtes Paket, Installation aus dem GitHub-Archiv im Hintergrund und im Browser), Sicherheit 58/58, Pinnwand 35/35, PDF 19/19, Termine 54/54, Beliebteste 33/33, `php -l` ohne Befund.
+
 ## 1.10.0 – 24.11.2026
 - **Updates aus GitHub und Codeberg** (neu: `includes/class-auhof-updater.php`, ersetzt `class-auhof-codeberg-updater.php`): Übergang für den Umzug nach GitHub. Das Plugin fragt beide Repositories – GitHub `Europagymnasium-Auhof-Linz/auhof-wordpress-plugin` und Codeberg `europagymnasium-auhof-linz/auhof-wordpress-plugin` – und bietet die höhere Version an (bei Gleichstand von GitHub).
   - GitHub: Tags über `api.github.com`, Paket `/archive/refs/tags/vX.Y.Z.zip` (Ordner `auhof-wordpress-plugin-X.Y.Z` wird in `auhof-schulseiten` umbenannt).
